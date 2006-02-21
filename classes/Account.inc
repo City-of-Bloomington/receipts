@@ -11,7 +11,7 @@
 			{
 				$sql = "select * from accounts where accountID=$id";
 				$result = mysql_query($sql) or die($sql.mysql_error());
-				if (mssql_num_rows($result))
+				if (mysql_num_rows($result))
 				{
 					$account = mysql_fetch_array(mysql_query($sql)) or die($sql.mysql_error());
 
@@ -31,7 +31,7 @@
 
 		private function update()
 		{
-			$sql = "update accounts set accountNumber='{$this->accountNumber}',name='{$this->name}' where accountID={$this->accountID}'";
+			$sql = "update accounts set accountNumber='{$this->accountNumber}',name='{$this->name}' where accountID={$this->accountID}";
 			mysql_query($sql) or die($sql.mysql_error());
 		}
 

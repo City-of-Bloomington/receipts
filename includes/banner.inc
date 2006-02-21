@@ -6,6 +6,7 @@
 		@import url("/skins/default/skin.css");
 	</style>
 	<style type="text/css" media="print">@import url("/skins/default/print.css");</style>
+	<script src="/functions.js" type="text/javascript"></script>
 	<title>Receipt Tracking</title>
 </head>
 <body>

@@ -1,6 +1,6 @@
 <?php
 /*
-	Lists the accounts in the system
+	Lists the fees in the system
 */
 	verifyUser('Administrator');
 
@@ -12,21 +12,23 @@
 <div id="mainContent">
 	<div class="interfaceBox">
 		<div class="titleBar">
-			<button type="button" class="addSmall" onclick="document.location.href='addAccountForm.php';">Add</button>
-			Accounts
+			<button type="button" class="addSmall" onclick="document.location.href='addFeeForm.php';">Add</button>
+			Fees
 		</div>
 		<table>
 		<?php
-			require_once(APPLICATION_HOME."/classes/AccountList.inc");
+			require_once(APPLICATION_HOME."/classes/FeeList.inc");
 
-			$accountList = new AccountList();
-			$accountList->findAll();
-			foreach($accountList as $account)
+			$feeList = new FeeList();
+			$feeList->findAll();
+			foreach($feeList as $fee)
 			{
+				$account = $fee->getAccount();
 				echo "
-				<tr><td><button type=\"button\" class=\"editSmall\" onclick=\"document.location.href='updateAccountForm.php?accountID={$account->getAccountID()}'\">Edit</button></td>
+				<tr><td><button type=\"button\" class=\"editSmall\" onclick=\"document.location.href='updateFeeForm.php?feeID={$fee->getFeeID()}'\">Edit</button></td>
+					<td>{$fee->getName()}</td>
+					<td>{$fee->getAmount()}</td>
 					<td>{$account->getName()}</td>
-					<td>{$account->getAccountNumber()}</td>
 				";
 			}
 		?>
@@ -37,3 +39,4 @@
 	include(APPLICATION_HOME."/includes/footer.inc");
 	include(GLOBAL_INCLUDES."/xhtmlFooter.inc");
 ?>
+

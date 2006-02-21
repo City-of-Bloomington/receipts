@@ -29,5 +29,7 @@
 	}
 
 
-	Header("Location: welcome.php");
+	# Send them to an appropriate page depending on their roles.
+	if (in_array("Administrator",$_SESSION['USER']->getRoles())) { Header("Location: users"); }
+	else { Header("Location: receipts/addReceiptForm.php"); }
 ?>

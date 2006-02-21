@@ -7,23 +7,28 @@
 	include(APPLICATION_HOME."/includes/sidebar.inc");
 ?>
 <div id="mainContent">
-	<h1>Users</h1>
-	<table>
-	<?php
-		require_once(APPLICATION_HOME."/classes/UserList.inc");
+	<div class="interfaceBox">
+		<div class="titleBar">
+			<button type="button" class="addSmall" onclick="document.location.href='addUserForm.php';">Add</button>
+			Users
+		</div>
+		<table>
+		<?php
+			require_once(APPLICATION_HOME."/classes/UserList.inc");
 
-		$userList = new UserList();
-		$userList->findAll();
-		foreach($userList as $user)
-		{
-			echo "
-			<tr><td><button type=\"button\" class=\"editSmall\" onclick=\"document.location.href='updateUserForm.php?userID={$user->getUserID()}'\">Edit</button>
-				<td>{$user->getUsername()}</td>
-				<td>{$user->getAuthenticationMethod()}</td></tr>
-			";
-		}
-	?>
-	</table>
+			$userList = new UserList();
+			$userList->findAll();
+			foreach($userList as $user)
+			{
+				echo "
+				<tr><td><button type=\"button\" class=\"editSmall\" onclick=\"document.location.href='updateUserForm.php?userID={$user->getUserID()}'\">Edit</button>
+					<td>{$user->getUsername()}</td>
+					<td>{$user->getAuthenticationMethod()}</td></tr>
+				";
+			}
+		?>
+		</table>
+	</div>
 </div>
 <?php
 	include(APPLICATION_HOME."/includes/footer.inc");
