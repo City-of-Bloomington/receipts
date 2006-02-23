@@ -5,7 +5,7 @@
 						password		# May be optional if LDAP is used
 						roles
 */
-	verifyUser("Administrator");
+	verifyUser("Administrator","Supervisor");
 
 	#--------------------------------------------------------------------------
 	# Data clenaup and validation

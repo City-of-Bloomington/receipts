@@ -5,7 +5,7 @@
 						amount
 						accountID
 */
-	verifyUser('Administrator');
+	verifyUser("Administrator","Supervisor");
 
 	#--------------------------------------------------------------------------
 	# Data clenaup and validation

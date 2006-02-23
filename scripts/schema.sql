@@ -42,8 +42,10 @@ create table receipts (
 	firstname varchar(128) not null,
 	lastname varchar(128) not null,
 	paymentMethod varchar(30) not null default 'cash',
+	notes text,
 	foreign key (paymentMethod) references paymentMethods(paymentMethod),
-	foreign key (enteredBy) references users(userID)
+	foreign key (enteredBy) references users(userID),
+	fulltext (notes)
 );
 
 create table paymentMethods (
@@ -58,6 +60,8 @@ create table lineItems (
 	feeID int unsigned not null,
 	quantity tinyint unsigned not null default 1,
 	amount decimal(7,2) not null,
+	notes varchar(128),
 	foreign key (receiptID) references receipts(receiptID),
-	foreign key (feeID) references fees(feeID)
+	foreign key (feeID) references fees(feeID),
+	fulltext (notes)
 );

@@ -11,5 +11,5 @@
 </head>
 <body>
 <div id="banner">
-	<h1><a href="<?php echo BASE_URL; ?>">Receipt Tracking</a></h1>
+	<h1><a href="<?php echo BASE_URL; ?>">Receipt Tracking</a></h1><h2>Police Department</h2>
 </div>

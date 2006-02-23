@@ -4,7 +4,7 @@
 						name
 						accountNumber
 */
-	verifyUser('Administrator');
+	verifyUser('Administrator','Supervisor');
 
 	#--------------------------------------------------------------------------
 	# Data clenaup and validation

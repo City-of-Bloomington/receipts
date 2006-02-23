@@ -1,5 +1,6 @@
 <?php
 	require_once(APPLICATION_HOME."/classes/User.inc");
+	require_once(APPLICATION_HOME."/classes/LineItemList.inc");
 	class Receipt
 	{
 		private $receiptID;
@@ -8,6 +9,7 @@
 		private $firstname;
 		private $lastname;
 		private $paymentMethod;
+		private $notes;
 
 		private $lineItems = array();
 
@@ -26,7 +28,7 @@
 					$this->firstname = $receipt['firstname'];
 					$this->lastname = $receipt['lastname'];
 					$this->paymentMethod = $receipt['paymentMethod'];
-					$this->paymentAmount = $receipt['paymentAmount'];
+					$this->notes = $receipt['notes'];
 
 					$this->loadLineItems();
 				}
@@ -53,7 +55,9 @@
 		private function update()
 		{
 			$sql = "update receipts set date='{$this->date}',enteredBy={$this->enteredBy},firstname='{$this->firstname}',lastname='{$this->lastname}',
-					paymentMethod='{$this->paymentMethod}' where receiptID={$this->receiptID}";
+					paymentMethod='{$this->paymentMethod}'";
+			if ($this->notes) { $sql.=",notes='{$this->notes}'"; } else { $sql.="notes=null"; }
+			$sql.=" where receiptID={$this->receiptID}";
 			mysql_query($sql) or die($sql.mysql_error());
 		}
 
@@ -61,6 +65,7 @@
 		{
 			$sql = "insert receipts set date='{$this->date}',enteredBy={$this->enteredBy},firstname='{$this->firstname}',lastname='{$this->lastname}',
 					paymentMethod='{$this->paymentMethod}'";
+			if ($this->notes) { $sql.=",notes='{$this->notes}'"; }
 			mysql_query($sql) or die($sql);
 			$this->receiptID = mysql_insert_id();
 
@@ -83,6 +88,7 @@
 		public function getFirstname() { return $this->firstname; }
 		public function getLastname() { return $this->lastname; }
 		public function getPaymentMethod() { return $this->paymentMethod; }
+		public function getNotes() { return $this->notes; }
 		public function getLineItems() { return $this->lineItems; }
 		public function getAmount()
 		{
@@ -96,9 +102,10 @@
 		public function setReceiptID($receiptID) { $this->receiptID = $receiptID; }
 		public function setDate($date) { $this->date = $date; }
 		public function setEnteredBy($userID) { $this->enteredBy = $userID; }
-		public function setFirstname($firstname) { $this->firstname = $firstname; }
-		public function setLastname($lastname) { $this->lastname = $lastname; }
+		public function setFirstname($firstname) { $this->firstname = sanitizeString($firstname); }
+		public function setLastname($lastname) { $this->lastname = sanitizeString($lastname); }
 		public function setPaymentMethod($paymentMethod) { $this->paymentMethod = $paymentMethod; }
+		public function setNotes($notes) { $this->notes = sanitizeString($notes); }
 
 		public function addLineItem($lineItem) { $this->lineItems[] = $lineItem; }
 	}

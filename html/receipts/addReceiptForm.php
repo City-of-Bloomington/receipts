@@ -11,25 +11,23 @@
 
 	<h1>Receipt of Payment</h1>
 	<form method="post" action="addReceipt.php">
-	<fieldset><legend>Customer Info</legend>
+	<fieldset><legend>1. Customer Info</legend>
 		<table>
-		<tr><td><label for="firstname">Firstname</label></td>
-			<td><label for="lastname">Lastname</label></td>
-			<td>Payment Method</td>
-		</tr>
+		<tr><td><label for="firstname">First Name</label></td>
+			<td><label for="lastname">Last Name</label></td></tr>
 		<tr><td><input name="firstname" id="firstname" /></td>
-			<td><input name="lastname" id="lastname" /></td>
-			<td><ul style="list-style-type:none;">
-					<li><label><input name="paymentMethod" type="radio" value="cash" checked="checked" />Cash</label></li>
-					<li><label><input name="paymentMethod" type="radio" value="check" />Check</label></li>
-				</ul>
-			</td>
-		</tr>
+			<td><input name="lastname" id="lastname" /></td></tr>
 		</table>
 	</fieldset>
-	<fieldset><legend>Services</legend>
+	<fieldset><legend>2. Payment Method</legend>
+		<ul style="list-style-type:none;">
+			<li><label><input name="paymentMethod" type="radio" value="cash" />Cash</label></li>
+			<li><label><input name="paymentMethod" type="radio" value="check" />Check</label></li>
+		</ul>
+	</fieldset>
+	<fieldset><legend>3. Services</legend>
 		<table id="lineItemTable">
-		<tr><th>Service</th><th>Unit</th><th>Cost</th></tr>
+		<tr><th>Service</th><th>Qty</th><th>Cost</th><th>Notes</th></tr>
 		<?php
 			require_once(APPLICATION_HOME."/classes/FeeList.inc");
 			$feeList = new FeeList();
@@ -46,8 +44,9 @@
 				echo "
 						</select>
 					</td>
-					<td><input name=\"feeQuantities[]\" id=\"feeQuantities[]\" size=\"2\" /></td>
-					<td><input name=\"feeAmounts[]\" id=\"feeAmounts[]\" size=\"5\" /></td>
+					<td><input name=\"feeQuantities[]\" size=\"2\" /></td>
+					<td><input name=\"feeAmounts[]\" size=\"5\" /></td>
+					<td><input name=\"feeNotes[]\" /></td>
 				</tr>
 				";
 			}
@@ -55,7 +54,10 @@
 		</tr>
 		</table>
 
-		<button type="submit" class="submit">Submit</button>
+	</fieldset>
+	<fieldset><legend>Additional Notes</legend>
+		<div><textarea name="notes" id="notes" rows="4" cols="60"></textarea></div>
+		<div><button type="submit" class="submit">Submit</button></div>
 	</fieldset>
 	</form>
 </div>

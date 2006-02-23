@@ -17,8 +17,9 @@
 
 					$this->setUserID($user['userID']);
 					$this->setUsername($user['username']);
-					$this->setPassword($user['password']);
 					$this->setAuthenticationMethod($user['authenticationMethod']);
+
+					if ($user['password']) { $this->setPassword($user['password']); }
 
 					$this->loadRoles();
 				}
@@ -70,7 +71,7 @@
 
 			foreach($roles as $role)
 			{
-				$sql = "insert userRoles set userID={$this->getUserID()},role=$role";
+				$sql = "insert userRoles set userID={$this->getUserID()},role='$role'";
 				mysql_query($sql) or die($sql.mysql_error());
 			}
 		}

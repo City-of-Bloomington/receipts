@@ -6,13 +6,7 @@
 						password
 						roles
 */
-	verifyUser("Administrator");
-
-	#--------------------------------------------------------------------------
-	# Data clenaup and validation
-	#--------------------------------------------------------------------------
-	$_POST['username'] = sanitizeString($_POST['username']);
-	$_POST['password'] = sanitizeString($_POST['password']);
+	verifyUser("Administrator","Supervisor");
 
 	if (!$_POST['username'] || ($_POST['authenticationMethod']=='local' && !$_POST['password']) )
 	{
@@ -33,4 +27,6 @@
 	if ($_POST['password']) { $user->setPassword($_POST['password']); }
 
 	$user->save();
+
+	Header("Location: home.php");
 ?>

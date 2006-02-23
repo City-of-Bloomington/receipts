@@ -1,5 +1,5 @@
 <?php
-	verifyUser("Administrator");
+	verifyUser("Administrator","Supervisor");
 
 	include(GLOBAL_INCLUDES."/xhtmlHeader.inc");
 	include(APPLICATION_HOME."/includes/banner.inc");
@@ -22,9 +22,14 @@
 			{
 				echo "
 				<tr><td><button type=\"button\" class=\"editSmall\" onclick=\"document.location.href='updateUserForm.php?userID={$user->getUserID()}'\">Edit</button>
+						<button type=\"button\" class=\"deleteSmall\" onclick=\"deleteConfirmation('deleteUser.php?userID={$user->getUserID()}');\">Delete</button>
+					</td>
 					<td>{$user->getUsername()}</td>
-					<td>{$user->getAuthenticationMethod()}</td></tr>
+					<td>{$user->getAuthenticationMethod()}</td>
+					<td>
 				";
+						foreach($user->getRoles() as $role) { echo "$role "; }
+				echo "</td></tr>";
 			}
 		?>
 		</table>

@@ -2,7 +2,7 @@
 /*
 	$_GET variables:	userID
 */
-	verifyUser("Administrator");
+	verifyUser("Administrator","Supervisor");
 
 	include(GLOBAL_INCLUDES."/xhtmlHeader.inc");
 	include(APPLICATION_HOME."/includes/banner.inc");
@@ -32,7 +32,7 @@
 		<tr><td><label for="password">Password</label></td>
 			<td><input name="password" id="password" /></td></tr>
 		<tr><td><label for="roles">Roles</label></td>
-			<td><select name="roles" id="roles" size="5" multiple="multiple">
+			<td><select name="roles[]" id="roles" size="5" multiple="multiple">
 				<?php
 					$sql = "select role from roles";
 					$roles = mysql_query($sql) or die($sql.mysql_error());
