@@ -20,7 +20,7 @@
 			require_once(APPLICATION_HOME."/classes/FeeList.inc");
 
 			$feeList = new FeeList();
-			$feeList->findAll();
+			$feeList->find();
 			foreach($feeList as $fee)
 			{
 				$account = $fee->getAccount();
@@ -29,6 +29,8 @@
 					<td>{$fee->getName()}</td>
 					<td>{$fee->getAmount()}</td>
 					<td>{$account->getName()}</td>
+					<td>{$account->getAccountNumber()}</td>
+				</tr>
 				";
 			}
 		?>

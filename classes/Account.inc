@@ -1,4 +1,5 @@
 <?php
+	require_once(APPLICATION_HOME."/classes/FeeList.inc");
 	class Account
 	{
 		private $accountID;
@@ -21,6 +22,13 @@
 				}
 				else { throw new Exception($sql); }
 			}
+		}
+
+		public function getFees()
+		{
+			$feeList = new FeeList();
+			$feeList->find(array("accountID"=>$this->accountID));
+			return $feeList;
 		}
 
 		public function save()

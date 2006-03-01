@@ -1,6 +1,5 @@
 <?php
 	require_once(APPLICATION_HOME."/classes/Account.inc");
-
 	class Fee
 	{
 		private $feeID;
@@ -19,7 +18,7 @@
 					$fee = mysql_fetch_array($result);
 					$this->feeID = $id;
 					$this->name = $fee['name'];
-					$this->amount = $fee['amount'];
+					if ($fee['amount']) { $this->amount = $fee['amount']; }
 					$this->accountID = $fee['accountID'];
 				}
 				else { throw new Exception($sql); }
@@ -34,13 +33,16 @@
 
 		private function update()
 		{
-			$sql = "update fees set name='{$this->name}',amount='{$this->amount}',accountID={$this->accountID} where feeID={$this->feeID}";
+			$sql = "update fees set name='{$this->name}',accountID={$this->accountID}";
+			if ($this->amount) { $sql.=",amount='{$this->amount}'"; }
+			$sql.=" where feeID={$this->feeID}";
 			mysql_query($sql) or die($sql.mysql_error());
 		}
 
 		private function insert()
 		{
-			$sql = "insert fees set name='{$this->name}',amount='{$this->amount}',accountID={$this->accountID}";
+			$sql = "insert fees set name='{$this->name}',accountID={$this->accountID}";
+			if ($this->amount) { $sql.=",amount='{$this->amount}'"; }
 			mysql_query($sql) or die($sql.mysql_error());
 			$this->feeID = mysql_insert_id();
 		}

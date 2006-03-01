@@ -4,15 +4,29 @@
 
 	class LineItemList extends MySQLResultIterator
 	{
-		public function findAll($sorting = "lineItemID")
+		public function find($fields=null,$sorting = "lineItemID")
 		{
-			$sql = "select lineItemID from lineItems order by $sorting";
-			$this->result = mysql_query($sql) or die($sql.mysql_error());
-		}
+			if ($fields)
+			{
+				$options = array();
+				$sql = "select lineItemID from lineItems";
 
-		public function findByReceiptID($receiptID,$sorting="lineItemID")
-		{
-			$sql = "select lineItemID from lineItems where receiptID=$receiptID order by $sorting";
+				if (isset($fields['lineItemID'])) { $options[] = "lineItemID=$fields[lineItemID]"; }
+				if (isset($fields['receiptID'])) { $options[] = "receiptID=$fields[receiptID]"; }
+				if (isset($fields['feeID'])) { $ptions[] = "feeID=$fields[feeID]"; }
+				if (isset($fields['quantity'])) { $options[] = "quantity=$fields[quantity]"; }
+				if (isset($fields['amount'])) { $options[] = "amount='$fields[amount]'"; }
+				if (isset($fields['notes']))
+				{
+					if ($fields['notes'] != "null") { $optionsp[] = "notes='$fields[notes]'"; }
+					else { $options[] = "notes is null"; }
+				}
+
+				$where = " where ".implode(" and ",$options);
+				$sql.= "$where order by $sorting";
+			}
+			else { $sql = "select lineItemID from lineItems order by $sorting"; }
+
 			$this->result = mysql_query($sql) or die($sql.mysql_error());
 		}
 

@@ -9,6 +9,7 @@
 		private $firstname;
 		private $lastname;
 		private $paymentMethod;
+		private $depositSlipDate;
 		private $notes;
 
 		private $lineItems = array();
@@ -28,7 +29,8 @@
 					$this->firstname = $receipt['firstname'];
 					$this->lastname = $receipt['lastname'];
 					$this->paymentMethod = $receipt['paymentMethod'];
-					$this->notes = $receipt['notes'];
+					if ($receipt['depositSlipDate']) { $this->depositSlipDate = $receipt['depositSlipDate']; }
+					if ($receipt['notes']) { $this->notes = $receipt['notes']; }
 
 					$this->loadLineItems();
 				}
@@ -56,7 +58,8 @@
 		{
 			$sql = "update receipts set date='{$this->date}',enteredBy={$this->enteredBy},firstname='{$this->firstname}',lastname='{$this->lastname}',
 					paymentMethod='{$this->paymentMethod}'";
-			if ($this->notes) { $sql.=",notes='{$this->notes}'"; } else { $sql.="notes=null"; }
+			if ($this->depositSlipDate) { $sql.=",depositSlipDate='{$this->depositSlipDate}'"; } else { $sql.=",depositSlipDate=null"; }
+			if ($this->notes) { $sql.=",notes='{$this->notes}'"; } else { $sql.=",notes=null"; }
 			$sql.=" where receiptID={$this->receiptID}";
 			mysql_query($sql) or die($sql.mysql_error());
 		}
@@ -65,6 +68,7 @@
 		{
 			$sql = "insert receipts set date='{$this->date}',enteredBy={$this->enteredBy},firstname='{$this->firstname}',lastname='{$this->lastname}',
 					paymentMethod='{$this->paymentMethod}'";
+			if ($this->depositSlipDate) { $sql.=",depositSlipDate='{$this->depositSlipDate}'"; }
 			if ($this->notes) { $sql.=",notes='{$this->notes}'"; }
 			mysql_query($sql) or die($sql);
 			$this->receiptID = mysql_insert_id();
@@ -75,7 +79,7 @@
 		private function loadLineItems()
 		{
 			$lineItemList = new LineItemList();
-			$lineItemList->findByReceiptID($this->receiptID);
+			$lineItemList->find(array("receiptID"=>$this->receiptID));
 			foreach($lineItemList as $lineItem)
 			{
 				$this->lineItems[] = $lineItem;
@@ -88,6 +92,7 @@
 		public function getFirstname() { return $this->firstname; }
 		public function getLastname() { return $this->lastname; }
 		public function getPaymentMethod() { return $this->paymentMethod; }
+		public function getDepositSlipDate() { return $this->depositSlipDate; }
 		public function getNotes() { return $this->notes; }
 		public function getLineItems() { return $this->lineItems; }
 		public function getAmount()
@@ -105,6 +110,7 @@
 		public function setFirstname($firstname) { $this->firstname = sanitizeString($firstname); }
 		public function setLastname($lastname) { $this->lastname = sanitizeString($lastname); }
 		public function setPaymentMethod($paymentMethod) { $this->paymentMethod = $paymentMethod; }
+		public function setDepositSlipDate($depositSlipDate) { $this->depositSlipDate = $depositSlipDate; }
 		public function setNotes($notes) { $this->notes = sanitizeString($notes); }
 
 		public function addLineItem($lineItem) { $this->lineItems[] = $lineItem; }

@@ -10,6 +10,41 @@
 	<?php include(GLOBAL_INCLUDES."/errorMessages.inc"); ?>
 
 	<h1>Receipt of Payment</h1>
+	<script type="text/javascript">
+		var feeRequest = getXMLHttpRequestObject();
+		var i;
+
+		function updateFeeAmount(index,feeID)
+		{
+			if (feeID != "")
+			{
+				i = index;
+				feeRequest.open("get","<?php echo BASE_URL; ?>/AJAX/getFeeAmount.php?feeID="+feeID);
+				feeRequest.onreadystatechange = handleFeeAmount;
+				feeRequest.send(null);
+			}
+			else
+			{
+				document.getElementById("feeQuantity_"+index).value = "";
+				document.getElementById("feeAmount_"+index).value = "";
+			}
+		}
+
+		function handleFeeAmount()
+		{
+			if (feeRequest.readyState == 4)
+			{
+				var quantity = document.getElementById("feeQuantity_"+i).value;
+				if (quantity == "") { quantity = 1; }
+
+				var amount = feeRequest.responseText;
+
+				var total = quantity * amount;
+				document.getElementById("feeQuantity_"+i).value = quantity;
+				document.getElementById("feeAmount_"+i).value = total;
+			}
+		}
+	</script>
 	<form method="post" action="addReceipt.php">
 	<fieldset><legend>1. Customer Info</legend>
 		<table>
@@ -23,6 +58,7 @@
 		<ul style="list-style-type:none;">
 			<li><label><input name="paymentMethod" type="radio" value="cash" />Cash</label></li>
 			<li><label><input name="paymentMethod" type="radio" value="check" />Check</label></li>
+			<li><label><input name="paymentMethod" type="radio" value="money order" />Money Order</label></li>
 		</ul>
 	</fieldset>
 	<fieldset><legend>3. Services</legend>
@@ -31,12 +67,12 @@
 		<?php
 			require_once(APPLICATION_HOME."/classes/FeeList.inc");
 			$feeList = new FeeList();
-			$feeList->findAll();
+			$feeList->find();
 
 			for($i=1; $i<=5; $i++)
 			{
 				echo "
-				<tr><td><select name=\"feeIDs[]\"><option></option>";
+				<tr><td><select name=\"feeIDs[]\" id=\"feeID_$i\" onchange=\"updateFeeAmount($i,this.options[this.selectedIndex].value)\"><option></option>";
 				foreach($feeList as $fee)
 				{
 					echo "<option value=\"{$fee->getFeeID()}\">{$fee->getName()}</option>";
@@ -44,14 +80,13 @@
 				echo "
 						</select>
 					</td>
-					<td><input name=\"feeQuantities[]\" size=\"2\" /></td>
-					<td><input name=\"feeAmounts[]\" size=\"5\" /></td>
-					<td><input name=\"feeNotes[]\" /></td>
+					<td><input name=\"feeQuantities[]\" id=\"feeQuantity_$i\" size=\"2\" /></td>
+					<td><input name=\"feeAmounts[]\" id=\"feeAmount_$i\" size=\"5\" /></td>
+					<td><input name=\"feeNotes[]\" id=\"feeNote_$i\"/></td>
 				</tr>
 				";
 			}
 		?>
-		</tr>
 		</table>
 
 	</fieldset>

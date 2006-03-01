@@ -14,7 +14,7 @@
 	$receipt->setFirstname($_POST['firstname']);
 	$receipt->setLastname($_POST['lastname']);
 	$receipt->setPaymentMethod($_POST['paymentMethod']);
-	if ($_POST['notes']) { $receipt->setNotes($_POST['notes']);
+	if ($_POST['notes']) { $receipt->setNotes($_POST['notes']); }
 
 
 	# Populate all the line items for the receipt
@@ -35,13 +35,24 @@
 
 
 	# Before we save, make sure we've got all the required fields.
-	if (!$receipt->getFirstname() || !$receipt->getLastname() || !$receipt->getPaymentMethod() || !count($receipt->getLineItems()))
+	if ( !$receipt->getLastname() )
 	{
-		$_SESSION['errorMessages'][] = "missingRequiredFields";
+		$_SESSION['errorMessages'][] = "missingLastname";
+	}
+	if (!$receipt->getPaymentMethod())
+	{
+		$_SESSION['errorMessages'][] = "missingPaymentMethod";
+	}
+	if (!$receipt->getLineItems())
+	{
+		$_SESSION['errorMessages'][] = "missingService";
+	}
+	if (isset($_SESSION['errorMessages']))
+	{
 		Header("Location: addReceiptForm.php");
-		#print_r($receipt);
 		exit();
 	}
+
 
 	$receipt->save();
 

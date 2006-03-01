@@ -29,23 +29,43 @@
 		{
 			if (!isset($_GET['paymentMethod'])) { $_GET['paymentMethod'] = ""; }
 
-			echo "<table>";
 			require_once(APPLICATION_HOME."/classes/ReceiptList.inc");
 			$receiptList = new ReceiptList();
 			$receiptList->search($_GET['month'],$_GET['day'],$_GET['year'],
 								$_GET['firstname'],$_GET['lastname'],$_GET['paymentMethod'],
+								$_GET['depositSlipMonth'],$_GET['depositSlipDay'],$_GET['depositSlipYear'],
 								$_GET['service'],$_GET['lineItemNotes'],$_GET['notes']);
-			foreach($receiptList as $receipt)
+			if (count($receiptList))
 			{
 				echo "
-				<tr><td><a href=\"viewReceipt.php?receiptID={$receipt->getReceiptID()}\">{$receipt->getReceiptID()}</a></td>
-					<td>{$receipt->getDate()}</td>
-					<td>{$receipt->getFirstname()} {$receipt->getLastname()}</td>
-					<td>\${$receipt->getAmount()}</td>
+				<table>
+				<tr><th>Receipt</th>
+					<th>Date</th>
+					<th>Customer Name</th>
+					<th>Amount</th>
+					<th>Deposited</th>
 				</tr>
 				";
+				foreach($receiptList as $receipt)
+				{
+					echo "
+					<tr><td><a href=\"viewReceipt.php?receiptID={$receipt->getReceiptID()}\">{$receipt->getReceiptID()}</a></td>
+						<td>{$receipt->getDate()}</td>
+						<td>{$receipt->getFirstname()} {$receipt->getLastname()}</td>
+						<td>\${$receipt->getAmount()}</td>
+						<td><a href=\"viewDepositSlip.php?date={$receipt->getDepositSlipDate()}\">{$receipt->getDepositSlipDate()}</a></td>
+					</tr>
+					";
+				}
+				echo "</table>";
 			}
-			echo "</table>";
+			else
+			{
+				$_SESSION['errorMessages'][] = "noReceiptsFound";
+				Header("Location: findReceiptForm.php");
+				exit();
+			}
+
 		}
 	?>
 </div>

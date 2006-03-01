@@ -4,20 +4,54 @@
 
 	class ReceiptList extends MySQLResultIterator
 	{
-		public function findAll($sorting="receiptID")
-		{
-			$sql = "select receiptID from receipts order by $sorting";
-			$this->result = mysql_query($sql) or die($sql.mysql_error());
-		}
+		private $where = "";
+		private $joins = "";
 
-		public function findByDate($date,$sorting="receiptID")
+		public function find($fields=null,$sorting="receiptID")
 		{
-			$sql = "select receiptID from receipts where date='$date' order by $sorting";
+			if ($fields)
+			{
+				$options = array();
+				if (isset($fields['receiptID'])) { $options[] = "receiptID=$fields[receiptID]"; }
+				if (isset($fields['date'])) { $options[] = "date='$fields[date]"; }
+				if (isset($fields['enteredBy'])) { $options[] = "enteredBy=$fields[enteredBy]"; }
+				if (isset($fields['firstname'])) { $options[] = "firstname='$fields[firstname]'"; }
+				if (isset($fields['lastname'])) { $options[] = "lastname='$fields[lastname]'"; }
+				if (isset($fields['paymentMethod'])) { $options[] = "paymentMethod='$fields[paymentMethod]'"; }
+
+				if (isset($fields['depositSlipDate']))
+				{
+					if ($fields['depositSlipDate'] != "null") { $options[] = "depositSlipDate='$fields[depositSlipDate]'"; }
+					else { $options[] = "depositSlipDate is null"; }
+				}
+				if (isset($fields['notes']))
+				{
+					if ($fields['notes'] != "null") { $options[] = "match (receipts.notes) against ('$fields[notes]')"; }
+					else { $options[] = "receipt.notes is null"; }
+				}
+
+				# If we want to find on these fields, we have to join the lineItems and fees tables.
+				if (isset($fields['accountID']) || isset($fields['feeID']))
+				{
+					$this->joins = " left join lineItems using (receiptID) left join fees using (feeID)";
+					if (isset($fields['accountID'])) { $options[] = "accountID=$fields[accountID]"; }
+					if (isset($fields['feeID'])) { $options[] = "lineItems.feeID=$fields[feeID]"; }
+				}
+
+				$this->where = "where ".implode(" and ",$options);
+				$sql = "select distinct receiptID from receipts {$this->joins} {$this->where} order by $sorting";
+			}
+			else
+			{
+				$sql = "select receiptID from receipts order by $sorting";
+			}
+
 			$this->result = mysql_query($sql) or die($sql.mysql_error());
 		}
 
 		public function search($month=null,$day=null,$year=null,
 								$firstname=null,$lastname=null,$paymentMethod=null,
+								$depositSlipMonth=null,$depositSlipDay=null,$depositSlipYear=null,
 								$lineItemName=null,$lineItemNotes=null,$receiptNotes=null)
 		{
 			$firstname = sanitizeString($firstname);
@@ -34,22 +68,83 @@
 				if ($year) { $options[] = "year(date)=$year"; }
 			}
 
+			if ($depositSlipMonth && $depositSlipDay && $depositSlipYear) { $options[] = "depositSlipDate='$depositSlipYear-$depositSlipMonth-$depositSlipDay'"; }
+			else
+			{
+				if ($depositSlipMonth) { $options[] = "month(depositSlipDate)=$depositSlipMonth"; }
+				if ($depositSlipDay) { $options[] = "dayofmonth(depositSlipDate)=$depositSlipDay"; }
+				if ($depositSlipYear) { $options[] = "year(depositSlipDate)=$depositSlipYear"; }
+			}
+
 			if ($firstname) { $options[] = "firstname like '$firstname%'"; }
 			if ($lastname) { $options[] = "lastname like '$lastname%'"; }
 			if ($paymentMethod) { $options[] = "paymentMethod='$paymentMethod'"; }
-			if ($lineItemName) { $options[] = "name='$lineItemName'"; }
-			if ($lineItemNotes) { $options[] = "match (lineItems.notes) against ('$lineItemNotes')"; }
 			if ($receiptNotes) { $options[] = "match (receipts.notes) against ('$receiptNotes')"; }
+
+			# If we want to find on these fields, we have to join the lineItems and fees tables.
+			if ($lineItemName || $lineItemNotes)
+			{
+				$this->joins = " left join lineItems using (receiptID) left join fees using (feeID)";
+				if ($lineItemName) { $options[] = "name='$lineItemName'"; }
+				if ($lineItemNotes) { $options[] = "match (lineItems.notes) against ('$lineItemNotes')"; }
+			}
 
 
 			if (count($options))
 			{
-				$options = implode(" and ",$options);
-				$sql = "select receiptID from receipts left join lineItems using (receiptID)
-						left join fees using (feeID)
-						where $options";
-				$this->result = mysql_query($sql) or die($sql.mysql_error());
+				$this->where = "where ".implode(" and ",$options);
+				$sql = "select distinct receiptID from receipts {$this->joins} {$this->where}";
 			}
+			else { $sql = "select receiptID from receipts"; }
+			$this->result = mysql_query($sql) or die($sql.mysql_error());
+		}
+
+
+		public function getTotalAmount($paymentMethod=null)
+		{
+			if ($paymentMethod)
+			{
+				if ($this->where) { $where = $this->where." and paymentMethod='$paymentMethod'"; }
+				else { $where = "where paymentMethod='$paymentMethod'"; }
+			}
+			else { $where = $this->where; }
+
+			$sql = "select sum(amount) from receipts {$this->joins} $where group by lineItemID";
+			$temp = mysql_query($sql) or die($sql.mysql_error());
+			list($amount) = mysql_fetch_array($temp);
+			return $amount;
+		}
+
+		public function getMinReceiptID()
+		{
+			$sql = "select min(receiptID) from receipts {$this->joins} {$this->where}";
+			$temp = mysql_query($sql) or die($sql.mysql_error());
+			list($receiptID) = mysql_fetch_array($temp);
+			return $receiptID;
+		}
+
+		public function getMaxReceiptID()
+		{
+			$sql = "select max(receiptID) from receipts {$this->joins} {$this->where}";
+			$temp = mysql_query($sql) or die($sql.mysql_error());
+			list($receiptID) = mysql_fetch_array($temp);
+			return $receiptID;
+		}
+
+		public function getMinYear()
+		{
+			$sql = "select min(year(date)) from receipts {$this->joins} {$this->where}";
+			$temp = mysql_query($sql) or die($sql.mysql_error());
+			list($year) = mysql_fetch_array($temp);
+			return $year;
+		}
+
+		public function getMaxYear()
+		{
+			$sql = "select max(year(date)) from receipts {$this->joins} {$this->where}";
+			$temp = mysql_query($sql) or die($sql.mysql_error());
+			list($year) = mysql_fetch_array($temp);
+			return $year;
 		}
 
 		protected function loadCurrent()
@@ -62,4 +157,3 @@
 		}
 	}
 ?>
-

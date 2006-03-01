@@ -13,7 +13,7 @@
 	$_POST['name'] = sanitizeString($_POST['name']);
 	$_POST['amount'] = ereg_replace("[^0-9.]","",$_POST['amount']);
 
-	if (!$_POST['name'] || !$_POST['amount'])
+	if (!$_POST['name'])
 	{
 		$_SESSION['errorMessages'][] = "missingRequiredFields";
 		Header("Location: updateFeeForm.php");

@@ -12,3 +12,16 @@
 
 	</ul>
 </div>
+
+	<?php
+	/*
+<div class="sidebar">
+	<div class="titleBar">Deposit Slips</div>
+		require_once(GLOBAL_INCLUDES."/classes/Calendar.inc");
+		$calendar = new Calendar();
+		$calendar->setURL(BASE_URL."/receipts/viewDepositSlip.php");
+		echo $calendar->asHTML();
+	</div>
+</div>
+	*/
+	?>

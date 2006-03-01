@@ -8,15 +8,15 @@
 ?>
 <div id="mainContent">
 
-	<h1>Today's Receipts</h1>
+	<h1>Current Receipts</h1>
 	<table>
 	<?php
-		$now = getdate();
-		$today = "$now[year]-$now[mon]-$now[mday]";
-
 		require_once(APPLICATION_HOME."/classes/ReceiptList.inc");
+
+		# List all the non deposited receipts
 		$receiptList = new ReceiptList();
-		$receiptList->findByDate($today);
+		$receiptList->find( array("depositSlipDate"=>"null") );
+
 		foreach($receiptList as $receipt)
 		{
 			echo "
@@ -29,6 +29,7 @@
 		}
 	?>
 	</table>
+	<button type="button" onclick="document.location.href='generateNewDepositSlip.php';">Generate Deposit Slip</button>
 </div>
 <?php
 	include(APPLICATION_HOME."/includes/footer.inc");

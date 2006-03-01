@@ -17,7 +17,7 @@
 			require_once(APPLICATION_HOME."/classes/UserList.inc");
 
 			$userList = new UserList();
-			$userList->findAll();
+			$userList->find();
 			foreach($userList as $user)
 			{
 				echo "

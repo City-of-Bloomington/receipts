@@ -24,7 +24,8 @@ insert roles values('Clerk');
 create table accounts (
 	accountID int unsigned not null primary key auto_increment,
 	accountNumber varchar(22) not null,
-	name varchar(30) not null
+	name varchar(30) not null,
+	unique (accountNumber)
 );
 
 create table fees (
@@ -42,6 +43,7 @@ create table receipts (
 	firstname varchar(128) not null,
 	lastname varchar(128) not null,
 	paymentMethod varchar(30) not null default 'cash',
+	depositSlipDate date,
 	notes text,
 	foreign key (paymentMethod) references paymentMethods(paymentMethod),
 	foreign key (enteredBy) references users(userID),
@@ -53,6 +55,7 @@ create table paymentMethods (
 );
 insert paymentMethods values('cash');
 insert paymentMethods values('check');
+insert paymentMethods values('money order');
 
 create table lineItems (
 	lineItemID int unsigned not null primary key auto_increment,

@@ -28,7 +28,7 @@
 			<td><input name="accountNumber" id="accountNumber" value="<?php echo $account->getAccountNumber(); ?>" /></td></tr>
 		</table>
 
-		<button type="submit" class="submit">Submit</button>
+		<button type="submit" class="save">Save</button>
 		<button type="button" class="cancel" onclick="document.location.href='home.php';">Cancel</button>
 	</fieldset>
 	</form>

@@ -4,15 +4,25 @@
 
 	class FeeList extends MySQLResultIterator
 	{
-		public function findAll($sortby = "name")
+		public function find($fields=null,$sortby = "name")
 		{
-			$sql = "select feeID from fees order by $sortby";
-			$this->result = mysql_query($sql) or die($sql.mysql_error());
-		}
+			if ($fields)
+			{
+				$options = array();
+				$sql = "select feeID from fees";
+				if (isset($fields['feeID'])) { $options[] = "feeID=$fields[feeID]"; }
+				if (isset($fields['name'])) { $options[] = "name='$fields[name]'"; }
+				if (isset($fields['accountID'])) { $options[] = "accountID=$fields[accountID]"; }
+				if (isset($fields['amount']))
+				{
+					if ($fields['amount']!="null") { $options[] = "amount='$fields[amount]'"; }
+					else { $options[] = "amount is null"; }
+				}
+				$where = " where ".implode(" and ",$options);
+				$sql.= "$where order by $sortby";
+			}
+			else { $sql = "select feeID from fees order by $sortby"; }
 
-		public function findByAccountID($accountID,$sortby="name")
-		{
-			$sql = "select feeID from fees where accountID=$accountID order by $sortby";
 			$this->result = mysql_query($sql) or die($sql.mysql_error());
 		}
 

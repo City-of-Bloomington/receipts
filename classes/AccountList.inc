@@ -4,9 +4,21 @@
 
 	class AccountList extends MySQLResultIterator
 	{
-		public function findAll($sortby = "name")
+		public function find($fields=null,$sortby = "name")
 		{
-			$sql = "select accountID from accounts order by $sortby";
+			if ($fields)
+			{
+				$options = array();
+				$sql = "select accountID from accounts";
+				if (isset($fields['accountID'])) { $options[] = "accountID=$fields[accountID]"; }
+				if (isset($fields['accountNumber'])) { $options[] = "accountNumber='$fields[accountNumber]'"; }
+				if (isset($fields['name'])) { $options[] = "name='$fields[name]'"; }
+
+				$where = " where ".implode(" and ",$options);
+				$sql.= "$where order by $sortby";
+			}
+			else { $sql = "select accountID from accounts order by $sortby"; }
+
 			$this->result = mysql_query($sql) or die($sql.mysql_error());
 		}
 

@@ -32,10 +32,10 @@
 					require_once(APPLICATION_HOME."/classes/AccountList.inc");
 
 					$accountList = new AccountList();
-					$accountList->findAll();
+					$accountList->find();
 					foreach($accountList as $account)
 					{
-						if ($fee->getAccountID() != $account->getAccountID()) { echo "<option value=\"{$account->getAccountID()}\">{$account->getName()}</option>"; }
+						if ($fee->getAccountID() != $account->getAccountID()) { echo "<option value=\"{$account->getAccountID()}\">{$account->getName()} - {$account->getAccountNumber()}</option>"; }
 						else { echo "<option value=\"{$account->getAccountID()}\" selected=\"selected\">{$account->getName()} - {$account->getAccountNumber()}</option>"; }
 					}
 				?>
@@ -44,7 +44,7 @@
 		</tr>
 		</table>
 
-		<button type="submit" class="submit">Submit</button>
+		<button type="submit" class="save">Save</button>
 		<button type="button" class="cancel" onclick="document.location.href='home.php';">Cancel</button>
 	</fieldset>
 	</form>
