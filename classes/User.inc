@@ -3,13 +3,15 @@
 
 	class User extends SystemUser
 	{
+		private $pin;
+
 		public function __construct($id = null)
 		{
 			if ($id)
 			{
 				# Load an existing user
-				if (is_numeric($id)) { $sql = "select userID,username,password,authenticationMethod from users where userID=$id"; }
-				else { $sql = "select userID,username,password,authenticationMethod from users where username='$id'"; }
+				if (is_numeric($id)) { $sql = "select * from users where userID=$id"; }
+				else { $sql = "select * from users where username='$id'"; }
 				$result = mysql_query($sql) or die($sql.mysql_error());
 				if (mysql_num_rows($result))
 				{
@@ -18,6 +20,7 @@
 					$this->setUserID($user['userID']);
 					$this->setUsername($user['username']);
 					$this->setAuthenticationMethod($user['authenticationMethod']);
+					if ($user['pin']) { $this->pin = $user['pin']; }
 
 					if ($user['password']) { $this->setPassword($user['password']); }
 
@@ -48,7 +51,8 @@
 		private function update()
 		{
 			$sql = "update users set username='{$this->getUsername()}',authenticationMethod='{$this->getAuthenticationMethod()}'";
-			if ($this->getPassword()) { $sql.=",password='".$this->getPassword()."'"; }
+			if ($this->getPassword()) { $sql.=",password='{$this->getPassword()}'"; } else { $sql.=",password=null"; }
+			if ($this->pin) { $sql.=",pin={$this->pin}"; } else { $sql.=",pin=null"; }
 			$sql.=" where userID=".$this->getUserID();
 			mysql_query($sql) or die($sql.mysql_error());
 		}
@@ -57,6 +61,7 @@
 		{
 			$sql = "insert users set username='{$this->getUsername()}',authenticationMethod='{$this->getAuthenticationMethod()}'";
 			if ($this->getPassword()) { $sql.=",password='{$this->getPassword()}'"; }
+			if ($this->pin) { $sql.=",pin={$this->pin}"; }
 			mysql_query($sql) or die($sql.mysql_error());
 
 			$this->setUserID(mysql_insert_id());
@@ -92,6 +97,7 @@
 			else { return false; }
 		}
 
-
+		public function getPin() { return $this->pin; }
+		public function setPin($pin) { $this->pin = ereg_replace("[^0-9]","",$pin); }
 	}
 ?>

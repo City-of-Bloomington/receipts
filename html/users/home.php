@@ -25,6 +25,7 @@
 						<button type=\"button\" class=\"deleteSmall\" onclick=\"deleteConfirmation('deleteUser.php?userID={$user->getUserID()}');\">Delete</button>
 					</td>
 					<td>{$user->getUsername()}</td>
+					<td>{$user->getPin()}</td>
 					<td>{$user->getAuthenticationMethod()}</td>
 					<td>
 				";

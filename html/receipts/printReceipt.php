@@ -7,6 +7,11 @@
 	require_once(APPLICATION_HOME."/classes/Receipt.inc");
 	$receipt = new Receipt($_GET['receiptID']);
 
+	if ($receipt->getAmount() >= 0) { $title = "Receipt pf Payment"; $totalLabel = "Amount Received"; }
+	else { $title = "Refund of Payment"; $totalLabel = "Amount Refunded"; }
+
+	$enteredBy = new User($receipt->getEnteredBy());
+
 $FO = "<?xml version=\"1.0\" encoding=\"utf-8\"?>
 <fo:root xmlns:fo=\"http://www.w3.org/1999/XSL/Format\">
 	<fo:layout-master-set>
@@ -32,7 +37,7 @@ $FO = "<?xml version=\"1.0\" encoding=\"utf-8\"?>
 							<fo:table-cell>
 								<fo:block>Date: {$receipt->getDate()}</fo:block>
 								<fo:block>Receipt #: {$receipt->getReceiptID()}</fo:block>
-								<fo:block>Received By: {$receipt->getEnteredBy()}</fo:block>
+								<fo:block>Received By: {$enteredBy->getPin()}</fo:block>
 							</fo:table-cell>
 						</fo:table-row>
 					</fo:table-body>
@@ -44,7 +49,7 @@ $FO = "<?xml version=\"1.0\" encoding=\"utf-8\"?>
 		</fo:static-content>
 
 		<fo:flow flow-name=\"xsl-region-body\">
-			<fo:block text-align=\"center\" font-size=\"14pt\" font-weight=\"bold\" space-after=\"2em\">Receipt of Payment</fo:block>
+			<fo:block text-align=\"center\" font-size=\"14pt\" font-weight=\"bold\" space-after=\"2em\">$title</fo:block>
 
 			<fo:block space-after=\"1em\">
 				<fo:table>
@@ -77,14 +82,17 @@ $FO = "<?xml version=\"1.0\" encoding=\"utf-8\"?>
 ";
 						foreach($receipt->getLineItems() as $lineItem)
 						{
+							$amount = number_format(abs($lineItem->getAmount()),2);
 							$FO.= "
 							<fo:table-row>
 								<fo:table-cell><fo:block>{$lineItem->getFee()->getName()}</fo:block></fo:table-cell>
 								<fo:table-cell><fo:block>{$lineItem->getQuantity()}</fo:block></fo:table-cell>
-								<fo:table-cell><fo:block>{$lineItem->getAmount()}</fo:block></fo:table-cell>
+								<fo:table-cell><fo:block>\$$amount</fo:block></fo:table-cell>
 							</fo:table-row>
 							";
 						}
+
+						$totalAmount = number_format(abs($receipt->getAmount()),2);
 $FO.= "
 					</fo:table-body>
 				</fo:table>
@@ -97,8 +105,8 @@ $FO.= "
 					<fo:table-body>
 						<fo:table-row border-top=\"1px solid black\" margin-top=\"2em\">
 							<fo:table-cell><fo:block></fo:block></fo:table-cell>
-							<fo:table-cell text-align=\"right\"><fo:block font-weight=\"bold\">Amount Received: </fo:block></fo:table-cell>
-							<fo:table-cell><fo:block>{$receipt->getAmount()}</fo:block></fo:table-cell>
+							<fo:table-cell text-align=\"right\"><fo:block font-weight=\"bold\">$totalLabel: </fo:block></fo:table-cell>
+							<fo:table-cell><fo:block>\$$totalAmount</fo:block></fo:table-cell>
 						</fo:table-row>
 					</fo:table-body>
 				</fo:table>
@@ -118,8 +126,13 @@ $FO.= "
 	file_put_contents("/tmp/$time.fo",$FO);
 	exec("/usr/local/XEP/xep -fo /tmp/$time.fo -pdf /tmp/$time.pdf");
 
-	# Send it to the printer
-	exec("lpr -P ".RECEIPT_PRINTER." /tmp/$time.pdf");
+	# Stream the PDF to the browser, so they can print it themselves.
+	Header('Content-type: application/pdf');
+	Header("Content-Disposition: inline; filename=receipt.pdf");
+	echo file_get_contents("/tmp/$time.pdf");
 
-	Header("Location: viewReceipt.php?receiptID=$_GET[receiptID]");
+	# Send it to the printer
+	#exec("lpr -P ".RECEIPT_PRINTER." /tmp/$time.pdf");
+
+	#Header("Location: viewReceipt.php?receiptID=$_GET[receiptID]");
 ?>

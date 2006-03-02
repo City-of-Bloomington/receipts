@@ -18,18 +18,31 @@
 <div id="mainContent">
 	<h1>Receipts Found</h1>
 	<?php
+		require_once(APPLICATION_HOME."/classes/ReceiptList.inc");
+
 		# If they typed in a receiptID, you don't get a list, you should go straight to the receipt
 		$_GET['receiptID'] = ereg_replace("[^0-9]","",$_GET['receiptID']);
 		if ($_GET['receiptID'])
 		{
-			Header("Location: viewReceipt.php?receiptID=$_GET[receiptID]");
-			exit();
+			# Make sure the receipt actually exists before sending them to it
+			try
+			{
+				$receipt = new Receipt($_GET['receiptID']);
+				Header("Location: viewReceipt.php?receiptID=$_GET[receiptID]");
+				exit();
+			}
+			catch (Exception $e)
+			{
+				$_SESSION['errorMessages'][] = "noReceiptsFound";
+				Header("Location: findReceiptForm.php");
+				exit();
+			}
 		}
+		# All the other fields besides a single receiptID
 		else
 		{
 			if (!isset($_GET['paymentMethod'])) { $_GET['paymentMethod'] = ""; }
 
-			require_once(APPLICATION_HOME."/classes/ReceiptList.inc");
 			$receiptList = new ReceiptList();
 			$receiptList->search($_GET['month'],$_GET['day'],$_GET['year'],
 								$_GET['firstname'],$_GET['lastname'],$_GET['paymentMethod'],

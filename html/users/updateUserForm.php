@@ -31,6 +31,8 @@
 			<td><input name="username" id="username" value="<?php echo $user->getUsername(); ?>" /></td></tr>
 		<tr><td><label for="password">Password</label></td>
 			<td><input name="password" id="password" /></td></tr>
+		<tr><td><label for="pin">Pin</label></td>
+			<td><input name="pin" size="5" maxlength="4" value="<?php echo $user->getPin(); ?>" /></td></tr>
 		<tr><td><label for="roles">Roles</label></td>
 			<td><select name="roles[]" id="roles" size="5" multiple="multiple">
 				<?php

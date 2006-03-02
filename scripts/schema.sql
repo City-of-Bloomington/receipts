@@ -2,7 +2,8 @@ create table users (
 	userID int unsigned not null primary key auto_increment,
 	username varchar(30) not null,
 	password varchar(32),
-	authenticationMethod varchar(30) not null default 'LDAP'
+	authenticationMethod varchar(30) not null default 'LDAP',
+	pin int(4) unsigned zerofill
 );
 
 create table userRoles (

@@ -40,16 +40,34 @@
 				var amount = feeRequest.responseText;
 
 				var total = quantity * amount;
+				total = total.toFixed(2);
 				document.getElementById("feeQuantity_"+i).value = quantity;
 				document.getElementById("feeAmount_"+i).value = total;
+
+				updateTotal();
 			}
+		}
+
+		function updateTotal()
+		{
+			var total = 0;
+
+			var inputs = document.getElementsByName('feeAmounts[]');
+			for (var i=0; i<inputs.length; i++)
+			{
+				if (inputs[i].value != "") { total += Number(inputs[i].value); }
+			}
+
+			if (total == 0) { total = ""; }
+			else { total = "$" + total.toFixed(2); }
+			document.getElementById('total').innerHTML = total;
 		}
 	</script>
 	<form method="post" action="addReceipt.php">
 	<fieldset><legend>1. Customer Info</legend>
 		<table>
 		<tr><td><label for="firstname">First Name</label></td>
-			<td><label for="lastname">Last Name</label></td></tr>
+			<td><label for="lastname" class="required">Last Name</label></td></tr>
 		<tr><td><input name="firstname" id="firstname" /></td>
 			<td><input name="lastname" id="lastname" /></td></tr>
 		</table>
@@ -80,13 +98,14 @@
 				echo "
 						</select>
 					</td>
-					<td><input name=\"feeQuantities[]\" id=\"feeQuantity_$i\" size=\"2\" /></td>
-					<td><input name=\"feeAmounts[]\" id=\"feeAmount_$i\" size=\"5\" /></td>
+					<td><input name=\"feeQuantities[]\" id=\"feeQuantity_$i\" size=\"2\" onchange=\"updateFeeAmount($i,document.getElementById('feeID_$i').options[document.getElementById('feeID_$i').selectedIndex].value);\" /></td>
+					<td><input name=\"feeAmounts[]\" id=\"feeAmount_$i\" size=\"5\" onchange=\"updateTotal();\" /></td>
 					<td><input name=\"feeNotes[]\" id=\"feeNote_$i\"/></td>
 				</tr>
 				";
 			}
 		?>
+		<tr class="total"><th colspan="2">Total</th><td id="total"></td><td></td></tr>
 		</table>
 
 	</fieldset>
