@@ -27,10 +27,11 @@
 	# If you do want to use LDAP authentication, you can comment this out
 	#--------------------------------------------------------------------------
 	define("LDAP_DN","ou=people,o=city.bloomington.in.us");
-	define("LDAP_USERNAME_ATTRIBUTE","uid");
 	define("LDAP_ADMIN_USER","username");
 	define("LDAP_ADMIN_PASS","password");
 	define("LDAP_SERVER","ldap.bloomington.in.gov");
+	define("LDAP_USERNAME_ATTRIBUTE","uid");
+	define("LDAP_PASSWORD_ATTRIBUTE","userpassword");
 
 	#--------------------------------------------------------------------------
 	# Printer Setup

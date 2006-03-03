@@ -7,7 +7,6 @@
 	$_POST Variables:	username
 						password
 */
-	require_once(APPLICATION_HOME."/classes/User.inc");
 
 	try
 	{

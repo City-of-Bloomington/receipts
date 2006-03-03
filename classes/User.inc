@@ -51,7 +51,7 @@
 		private function update()
 		{
 			$sql = "update users set username='{$this->getUsername()}',authenticationMethod='{$this->getAuthenticationMethod()}'";
-			if ($this->getPassword()) { $sql.=",password='{$this->getPassword()}'"; } else { $sql.=",password=null"; }
+			if ($this->getPassword()) { $sql.=",password=md5('{$this->getPassword()}')"; } else { $sql.=",password=null"; }
 			if ($this->pin) { $sql.=",pin={$this->pin}"; } else { $sql.=",pin=null"; }
 			$sql.=" where userID=".$this->getUserID();
 			mysql_query($sql) or die($sql.mysql_error());
@@ -60,7 +60,7 @@
 		private function insert()
 		{
 			$sql = "insert users set username='{$this->getUsername()}',authenticationMethod='{$this->getAuthenticationMethod()}'";
-			if ($this->getPassword()) { $sql.=",password='{$this->getPassword()}'"; }
+			if ($this->getPassword()) { $sql.=",password=md5('{$this->getPassword()}')"; }
 			if ($this->pin) { $sql.=",pin={$this->pin}"; }
 			mysql_query($sql) or die($sql.mysql_error());
 
@@ -79,6 +79,12 @@
 				$sql = "insert userRoles set userID={$this->getUserID()},role='$role'";
 				mysql_query($sql) or die($sql.mysql_error());
 			}
+		}
+
+		protected function saveLocalPassword()
+		{
+			$sql = "update users set password=md5('{$this->getPassword()}') where userID={$this->getUserID()}";
+			mysql_query($sql) or die($sql.mysql_error());
 		}
 
 		protected function loadRoles()
