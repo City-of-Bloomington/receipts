@@ -24,9 +24,10 @@
 	#--------------------------------------------------------------------------
 	# LDAP Configuration
 	# This is required in order to use the LDAP authentication
-	# If you do want to use LDAP authentication, you can comment this out
+	# If you do not want to use LDAP authentication, you can comment this out
 	#--------------------------------------------------------------------------
-	define("LDAP_DN","ou=people,o=city.bloomington.in.us");
+	define("LDAP_DOMAIN","city.bloomington.in.us");
+	define("LDAP_DN","ou=people,o=".LDAP_DOMAIN);
 	define("LDAP_ADMIN_USER","username");
 	define("LDAP_ADMIN_PASS","password");
 	define("LDAP_SERVER","ldap.bloomington.in.gov");
