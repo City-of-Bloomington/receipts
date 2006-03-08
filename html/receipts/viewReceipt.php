@@ -49,7 +49,6 @@
 	</table>
 
 	<button type="button" class="print" onclick="window.open('printReceipt.php?receiptID=<?php echo $_GET['receiptID']; ?>');">Print</button>
-	<button type="button" class="refund" onclick="document.location.href='refundReceiptForm.php?receiptID=<?php echo $_GET['receiptID']; ?>';">Refund</button>
 </div>
 <?php
 	include(APPLICATION_HOME."/includes/footer.inc");

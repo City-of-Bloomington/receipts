@@ -7,10 +7,8 @@
 	require_once(APPLICATION_HOME."/classes/Receipt.inc");
 	$receipt = new Receipt($_GET['receiptID']);
 
-	if ($receipt->getAmount() >= 0) { $title = "Receipt pf Payment"; $totalLabel = "Amount Received"; }
-	else { $title = "Refund of Payment"; $totalLabel = "Amount Refunded"; }
-
 	$enteredBy = new User($receipt->getEnteredBy());
+	$date = explode("-",$receipt->getDate());
 
 $FO = "<?xml version=\"1.0\" encoding=\"utf-8\"?>
 <fo:root xmlns:fo=\"http://www.w3.org/1999/XSL/Format\">
@@ -30,13 +28,16 @@ $FO = "<?xml version=\"1.0\" encoding=\"utf-8\"?>
 					<fo:table-body>
 						<fo:table-row>
 							<fo:table-cell>
-								<fo:block font-size=\"14pt\" font-weight=\"bold\">City of Bloomington</fo:block>
-								<fo:block>Police Department</fo:block>
+								<fo:block font-size=\"14pt\" font-weight=\"bold\">City of Bloomington, IN</fo:block>
+								<fo:block font-weight=\"bold\">Police Department</fo:block>
+								<fo:block>220 East 3rd St</fo:block>
+								<fo:block>Bloomington, IN 47401</fo:block>
+								<fo:block>(812) 339-4477</fo:block>
 							</fo:table-cell>
 							<fo:table-cell><fo:block></fo:block></fo:table-cell>
 							<fo:table-cell>
-								<fo:block>Date: {$receipt->getDate()}</fo:block>
-								<fo:block>Receipt #: {$receipt->getReceiptID()}</fo:block>
+								<fo:block>Receipt #<fo:inline font-weight=\"bold\">{$receipt->getReceiptID()}</fo:inline></fo:block>
+								<fo:block>Date: $date[2]-$date[1]-$date[0]</fo:block>
 								<fo:block>Received By: {$enteredBy->getPin()}</fo:block>
 							</fo:table-cell>
 						</fo:table-row>
@@ -45,11 +46,11 @@ $FO = "<?xml version=\"1.0\" encoding=\"utf-8\"?>
 			</fo:block>
 		</fo:static-content>
 		<fo:static-content flow-name=\"xsl-region-after\">
-			<fo:block font-size=\"8pt\">Form Prescribed by State Board of Accounts</fo:block>
+			<fo:block font-size=\"8pt\">Form Prescribed by State Board of Accounts (2006)</fo:block>
 		</fo:static-content>
 
 		<fo:flow flow-name=\"xsl-region-body\">
-			<fo:block text-align=\"center\" font-size=\"14pt\" font-weight=\"bold\" space-after=\"2em\">$title</fo:block>
+			<fo:block text-align=\"center\" font-size=\"14pt\" font-weight=\"bold\" space-after=\"2em\">Receipt of Payment</fo:block>
 
 			<fo:block space-after=\"1em\">
 				<fo:table>
@@ -77,7 +78,7 @@ $FO = "<?xml version=\"1.0\" encoding=\"utf-8\"?>
 						<fo:table-row>
 							<fo:table-cell><fo:block font-weight=\"bold\">Service</fo:block></fo:table-cell>
 							<fo:table-cell><fo:block font-weight=\"bold\">Quantity</fo:block></fo:table-cell>
-							<fo:table-cell><fo:block font-weight=\"bold\">Cost</fo:block></fo:table-cell>
+							<fo:table-cell text-align=\"right\"><fo:block font-weight=\"bold\">Cost</fo:block></fo:table-cell>
 						</fo:table-row>
 ";
 						foreach($receipt->getLineItems() as $lineItem)
@@ -87,7 +88,7 @@ $FO = "<?xml version=\"1.0\" encoding=\"utf-8\"?>
 							<fo:table-row>
 								<fo:table-cell><fo:block>{$lineItem->getFee()->getName()}</fo:block></fo:table-cell>
 								<fo:table-cell><fo:block>{$lineItem->getQuantity()}</fo:block></fo:table-cell>
-								<fo:table-cell><fo:block>\$$amount</fo:block></fo:table-cell>
+								<fo:table-cell text-align=\"right\"><fo:block>\$$amount</fo:block></fo:table-cell>
 							</fo:table-row>
 							";
 						}
@@ -105,8 +106,8 @@ $FO.= "
 					<fo:table-body>
 						<fo:table-row border-top=\"1px solid black\" margin-top=\"2em\">
 							<fo:table-cell><fo:block></fo:block></fo:table-cell>
-							<fo:table-cell text-align=\"right\"><fo:block font-weight=\"bold\">$totalLabel: </fo:block></fo:table-cell>
-							<fo:table-cell><fo:block>\$$totalAmount</fo:block></fo:table-cell>
+							<fo:table-cell text-align=\"right\"><fo:block font-weight=\"bold\">Amount Received: </fo:block></fo:table-cell>
+							<fo:table-cell text-align=\"right\"><fo:block>\$$totalAmount</fo:block></fo:table-cell>
 						</fo:table-row>
 					</fo:table-body>
 				</fo:table>
