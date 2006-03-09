@@ -22,7 +22,7 @@
 					require_once(APPLICATION_HOME."/classes/AccountList.inc");
 
 					$accountList = new AccountList();
-					$accountList->findAll();
+					$accountList->find();
 					foreach($accountList as $account)
 					{
 						echo "<option value=\"{$account->getAccountID()}\">{$account->getName()} - {$account->getAccountNumber()}</option>";
