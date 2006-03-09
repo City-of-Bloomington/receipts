@@ -52,4 +52,3 @@
 	# Import global functions that we use for many applications we write
 	include(GLOBAL_INCLUDES."/ITSFunctions.inc");
 ?>
-

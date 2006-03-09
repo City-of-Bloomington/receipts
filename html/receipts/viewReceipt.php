@@ -48,7 +48,7 @@
 	<tr><td colspan="3"><?php echo $receipt->getNotes(); ?></td></tr>
 	</table>
 
-	<button type="button" class="print" onclick="window.open('printReceipt.php?receiptID=<?php echo $_GET['receiptID']; ?>');">Print</button>
+	<button type="button" class="print" onclick="document.location.href='printReceipt.php?receiptID=<?php echo $_GET['receiptID']; ?>';">Print</button>
 </div>
 <?php
 	include(APPLICATION_HOME."/includes/footer.inc");

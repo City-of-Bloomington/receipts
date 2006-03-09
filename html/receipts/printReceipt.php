@@ -2,14 +2,15 @@
 /*
 	$_GET variables:	receiptID
 */
-	verifyUser();
+	ini_set("output_buffering",false);
+	session_cache_limiter("public");
 
+	verifyUser();
 	require_once(APPLICATION_HOME."/classes/Receipt.inc");
 	$receipt = new Receipt($_GET['receiptID']);
 
 	$enteredBy = new User($receipt->getEnteredBy());
 	$date = explode("-",$receipt->getDate());
-
 $FO = "<?xml version=\"1.0\" encoding=\"utf-8\"?>
 <fo:root xmlns:fo=\"http://www.w3.org/1999/XSL/Format\">
 	<fo:layout-master-set>
@@ -121,16 +122,20 @@ $FO.= "
 ";
 
 
-
 	# Create the PDF
 	$time = time();
 	file_put_contents("/tmp/$time.fo",$FO);
-	exec("/usr/local/XEP/xep -fo /tmp/$time.fo -pdf /tmp/$time.pdf");
+	$output = exec("/usr/local/XEP/xep -fo /tmp/$time.fo -pdf /tmp/$time.pdf");
+
+	$filesize = filesize("/tmp/$time.pdf");
 
 	# Stream the PDF to the browser, so they can print it themselves.
+	Header("Pragma: public");
 	Header('Content-type: application/pdf');
 	Header("Content-Disposition: inline; filename=receipt.pdf");
-	echo file_get_contents("/tmp/$time.pdf");
+	Header("Content-length: $filesize");
+
+	readfile("/tmp/$time.pdf");
 
 	# Send it to the printer
 	#exec("lpr -P ".RECEIPT_PRINTER." /tmp/$time.pdf");
