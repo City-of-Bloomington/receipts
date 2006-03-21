@@ -35,6 +35,12 @@
 	define("LDAP_PASSWORD_ATTRIBUTE","userpassword");
 
 	#--------------------------------------------------------------------------
+	# PDF Generator setup
+	# This currently requires XEP from RenderX
+	#--------------------------------------------------------------------------
+	define("XEP_INSTALL_PATH","/usr/local/xep");
+
+	#--------------------------------------------------------------------------
 	# Printer Setup
 	#--------------------------------------------------------------------------
 	define("RECEIPT_PRINTER","ITS");

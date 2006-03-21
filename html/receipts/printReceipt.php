@@ -125,7 +125,7 @@ $FO.= "
 	# Create the PDF
 	$time = time();
 	file_put_contents("/tmp/$time.fo",$FO);
-	$output = exec("/usr/local/XEP/xep -fo /tmp/$time.fo -pdf /tmp/$time.pdf");
+	$output = exec(XEP_INSTALL_PATH."/xep -fo /tmp/$time.fo -pdf /tmp/$time.pdf");
 
 	$filesize = filesize("/tmp/$time.pdf");
 
