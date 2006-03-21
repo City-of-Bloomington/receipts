@@ -47,7 +47,7 @@ $FO = "<?xml version=\"1.0\" encoding=\"utf-8\"?>
 			</fo:block>
 		</fo:static-content>
 		<fo:static-content flow-name=\"xsl-region-after\">
-			<fo:block font-size=\"8pt\">Form Prescribed by State Board of Accounts (2006)</fo:block>
+			<fo:block font-size=\"8pt\">Form Approved by State Board of Accounts (2006)</fo:block>
 		</fo:static-content>
 
 		<fo:flow flow-name=\"xsl-region-body\">
