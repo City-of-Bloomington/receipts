@@ -72,13 +72,15 @@ $FO = "<?xml version=\"1.0\" encoding=\"utf-8\"?>
 
 			<fo:block>
 				<fo:table>
-					<fo:table-column column-width=\"50%\"/>
-					<fo:table-column column-width=\"25%\"/>
-					<fo:table-column column-width=\"25%\"/>
+					<fo:table-column column-width=\"40%\"/>
+					<fo:table-column column-width=\"20%\"/>
+					<fo:table-column column-width=\"20%\"/>
+					<fo:table-column column-width=\"20%\"/>
 					<fo:table-body>
 						<fo:table-row>
 							<fo:table-cell><fo:block font-weight=\"bold\">Service</fo:block></fo:table-cell>
 							<fo:table-cell><fo:block font-weight=\"bold\">Quantity</fo:block></fo:table-cell>
+							<fo:table-cell><fo:block font-weight=\"bold\">Notes</fo:block></fo:table-cell>
 							<fo:table-cell text-align=\"right\"><fo:block font-weight=\"bold\">Cost</fo:block></fo:table-cell>
 						</fo:table-row>
 ";
@@ -89,6 +91,7 @@ $FO = "<?xml version=\"1.0\" encoding=\"utf-8\"?>
 							<fo:table-row>
 								<fo:table-cell><fo:block>{$lineItem->getFee()->getName()}</fo:block></fo:table-cell>
 								<fo:table-cell><fo:block>{$lineItem->getQuantity()}</fo:block></fo:table-cell>
+								<fo:table-cell><fo:block>{$lineItem->getNotes()}</fo:block></fo:table-cell>
 								<fo:table-cell text-align=\"right\"><fo:block>\$$amount</fo:block></fo:table-cell>
 							</fo:table-row>
 							";
