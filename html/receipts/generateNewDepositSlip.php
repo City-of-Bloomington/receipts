@@ -3,7 +3,7 @@
 	Gathers all the outstanding receipts and saves a depositSlipDate for them
 	You can only generate one deposit slip for a given day
 */
-	verifyUser();
+	verifyUser("Supervisor");
 
 	require_once(APPLICATION_HOME."/classes/DepositSlip.inc");
 	try

@@ -37,7 +37,7 @@
 		$receiptList = new ReceiptList();
 		$receiptList->find( array("depositSlipDate"=>"$now[year]-$now[mon]-$now[mday]") );
 		if (count($receiptList)) { echo "<button type=\"button\" onclick=\"document.location.href='viewDepositSlip.php?date=$now[year]-$now[mon]-$now[mday]';\">View Today&#39;s Deposit Slip</button>"; }
-		else { echo "<button type=\"button\" onclick=\"document.location.href='generateNewDepositSlip.php';\">Generate Deposit Slip</button>"; }
+		elseif (in_array("Supervisor",$_SESSION['USER']->getRoles())) { echo "<button type=\"button\" onclick=\"document.location.href='generateNewDepositSlip.php';\">Generate Deposit Slip</button>"; }
 	?>
 </div>
 <?php
