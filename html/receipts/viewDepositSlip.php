@@ -32,19 +32,11 @@
 			$cashGrandTotal = 0;
 			$checkGrandTotal = 0;
 			$moneyOrderGrandTotal = 0;
+			$bufferHasReceiptData = false;
 			foreach($accountList as $account)
 			{
-				$bufferHasReceiptData = false;
-				$buffer.= "
-				<tr><th colspan=\"6\">{$account->getName()} - {$account->getAccountNumber()}</th></tr>
-				<tr><th>Service</th>
-					<th>Quantity</th>
-					<th>Cash</th>
-					<th>Check</th>
-					<th>Money Order</th>
-					<th>Total</th>
-				</tr>
-				";
+				$accountHasReceiptData = false;
+				$accountFeeBuffer = "";
 
 				$cashSubtotal = 0;
 				$checkSubtotal = 0;
@@ -66,9 +58,9 @@
 					$moneyOrderSubtotal += $moneyOrder;
 					$accountSubtotal += $feeTotal;
 
-					if ($numReceipts)
+					if ($numReceipts > 0)
 					{
-						$buffer.= "
+						$accountFeeBuffer.= "
 						<tr><td>{$fee->getName()}</td>
 							<td>$numReceipts</td>
 							<td class=\"money\">$cash</td>
@@ -77,28 +69,41 @@
 							<td class=\"money\">$feeTotal</td>
 						</tr>
 						";
+						$accountHasReceiptData = true;
 						$bufferHasReceiptData = true;
 					}
 				}
 
-				$cashGrandTotal += $cashSubtotal;
-				$checkGrandTotal += $checkSubtotal;
-				$moneyOrderGrandTotal += $moneyOrderSubtotal;
+				if ($accountHasReceiptData)
+				{
+					$cashGrandTotal += $cashSubtotal;
+					$checkGrandTotal += $checkSubtotal;
+					$moneyOrderGrandTotal += $moneyOrderSubtotal;
 
-				$cashSubtotal = $cashSubtotal ? number_format($cashSubtotal,2) : "";
-				$checkSubtotal = $checkSubtotal ? number_format($checkSubtotal,2) : "";
-				$moneyOrderSubtotal = $moneyOrderSubtotal ? number_format($moneyOrderSubtotal,2) : "";
-				$accountSubtotal = $accountSubtotal ? number_format($accountSubtotal,2) : "";
+					$cashSubtotal = $cashSubtotal ? number_format($cashSubtotal,2) : "";
+					$checkSubtotal = $checkSubtotal ? number_format($checkSubtotal,2) : "";
+					$moneyOrderSubtotal = $moneyOrderSubtotal ? number_format($moneyOrderSubtotal,2) : "";
+					$accountSubtotal = $accountSubtotal ? number_format($accountSubtotal,2) : "";
 
-				$buffer.= "
-				<tr class=\"total\">
-					<th colspan=\"2\">Subtotal</th>
-					<td class=\"money\">$cashSubtotal</td>
-					<td class=\"money\">$checkSubtotal</td>
-					<td class=\"money\">$moneyOrderSubtotal</td>
-					<td class=\"money\">$accountSubtotal</td>
-				</tr>
-				";
+					$buffer.= "
+					<tr><th colspan=\"6\">{$account->getName()} - {$account->getAccountNumber()}</th></tr>
+					<tr><th>Service</th>
+						<th>Quantity</th>
+						<th>Cash</th>
+						<th>Check</th>
+						<th>Money Order</th>
+						<th>Total</th>
+					</tr>
+					$accountFeeBuffer
+					<tr class=\"total\">
+						<th colspan=\"2\">Subtotal</th>
+						<td class=\"money\">$cashSubtotal</td>
+						<td class=\"money\">$checkSubtotal</td>
+						<td class=\"money\">$moneyOrderSubtotal</td>
+						<td class=\"money\">$accountSubtotal</td>
+					</tr>
+					";
+				}
 			}
 
 			if ($bufferHasReceiptData)
