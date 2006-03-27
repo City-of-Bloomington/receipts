@@ -13,12 +13,21 @@
 	<?php
 		require_once(APPLICATION_HOME."/classes/DepositSlip.inc");
 		require_once(APPLICATION_HOME."/classes/AccountList.inc");
+
+		include(GLOBAL_INCLUDES."/errorMessages.inc");
 		try
 		{
 			$depositSlip = new DepositSlip($_GET['date']);
 			$date = explode("-",$_GET['date']);
+
+			$now = getdate();
+			if ($_GET['date'] == "$now[year]-$now[mon]-$now[mday]")
+			{
+				$deleteButton = "<button type=\"button\" class=\"delete\" onclick=\"document.location.href='deleteDepositSlip.php?date=$_GET[date]';\">Delete</button>";
+			}
+			else { $deleteButton = ""; }
 			echo "
-			<h1>Deposit Slip for $date[2]-$date[1]-$date[0]</h1>
+			<h1>Deposit Slip for $date[2]-$date[1]-$date[0] $deleteButton</h1>
 			<table>
 			<colgroup>
 				<col /><col /><col class=\"money\" /><col class=\"money\" /><col class=\"money\" /><col class=\"money\" />
@@ -136,8 +145,11 @@
 				{
 					$amount = number_format($receipt->getAmount(),2);
 					$date = explode("-",$receipt->getDate());
+
+					if ($receipt->getStatus() == 'void') { echo "<tr class=\"void\">"; }
+					else { echo "<tr>"; }
 					echo "
-					<tr><td><a href=\"viewReceipt.php?receiptID={$receipt->getReceiptID()}\">{$receipt->getReceiptID()}</a></td>
+						<td><a href=\"viewReceipt.php?receiptID={$receipt->getReceiptID()}\">{$receipt->getReceiptID()}</a></td>
 						<td class=\"money\">$amount</td>
 						<td>$date[2]-$date[1]-$date[0]</td>
 					</tr>

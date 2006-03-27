@@ -14,41 +14,16 @@
 		require_once(APPLICATION_HOME."/classes/Receipt.inc");
 		$receipt = new Receipt($_GET['receiptID']);
 
-		echo "<h1>Receipt $_GET[receiptID]";
-		if ($receipt->getAmount() > 0) { echo ""; }
-		echo "</h1>";
+		include(APPLICATION_HOME."/includes/receipts/receiptInfo.inc");
 	?>
-	<table class="receipt">
-	<tr><th colspan="2">Customer Name</th></tr>
-	<tr><td><?php echo "{$receipt->getFirstname()} {$receipt->getLastname()}"; ?></td></tr>
-
-	<tr><th>Payment Method</th></tr>
-	<tr><td><?php echo "{$receipt->getPaymentMethod()}"; ?></td></tr>
-	</table>
-
-	<table>
-	<tr><th>Service</th><th>Units</th><th>Cost</th><th>Notes</th></tr>
-	<?php
-		foreach($receipt->getLineItems() as $lineItem)
-		{
-			echo "
-			<tr><td>{$lineItem->getFee()->getName()}</td>
-				<td>{$lineItem->getQuantity()}</td>
-				<td>{$lineItem->getAmount()}</td>
-				<td>{$lineItem->getNotes()}</td>
-			</tr>
-			";
-		}
-	?>
-	<tr class="total">
-		<th colspan="2">Total</th>
-		<td>$<?php echo number_format($receipt->getAmount(),2); ?></td>
-		<td></td>
-	</tr>
-	<tr><td colspan="3"><?php echo $receipt->getNotes(); ?></td></tr>
-	</table>
 
 	<button type="button" class="print" onclick="document.location.href='printReceipt.php?receiptID=<?php echo $_GET['receiptID']; ?>';">Print</button>
+	<?php
+		if (!$receipt->getDepositSlipDate() && in_array("Supervisor",$_SESSION['USER']->getRoles()))
+		{
+			echo "<button type=\"button\" class=\"void\" onclick=\"document.location.href='voidReceiptForm.php?receiptID=$_GET[receiptID]';\">Void</button>";
+		}
+	?>
 </div>
 <?php
 	include(APPLICATION_HOME."/includes/footer.inc");

@@ -24,9 +24,9 @@
 			<tr><td><a href=\"viewReceipt.php?receiptID={$receipt->getReceiptID()}\">{$receipt->getReceiptID()}</a></td>
 				<td>{$receipt->getDate()}</td>
 				<td>{$receipt->getFirstname()} {$receipt->getLastname()}</td>
-				<td>\$$amount</td>
-			</tr>
 			";
+			if ($receipt->getStatus() == "void") { echo "<td class=\"void\">\$$amount</td><td>Voided</td></tr>"; }
+			else { echo "<td>\$$amount</td><td></td></tr>"; }
 		}
 	?>
 	</table>

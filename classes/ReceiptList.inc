@@ -104,10 +104,10 @@
 		{
 			if ($paymentMethod)
 			{
-				if ($this->where) { $where = $this->where." and paymentMethod='$paymentMethod'"; }
-				else { $where = "where paymentMethod='$paymentMethod'"; }
+				if ($this->where) { $where = $this->where." and paymentMethod='$paymentMethod' and status='valid'"; }
+				else { $where = "where paymentMethod='$paymentMethod' and status='valid'"; }
 			}
-			else { $where = $this->where; }
+			else { $where = $this->where." and status='valid'"; }
 
 			# Total amounts will always have to join lineItems and fees, no matter what.
 			$sql = "select sum(amount) from receipts left join lineItems using (receiptID) left join fees using (feeID) $where";

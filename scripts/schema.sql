@@ -45,6 +45,7 @@ create table receipts (
 	lastname varchar(128) not null,
 	paymentMethod varchar(30) not null default 'cash',
 	depositSlipDate date,
+	status enum('valid','void') not null default 'valid',
 	notes text,
 	foreign key (paymentMethod) references paymentMethods(paymentMethod),
 	foreign key (enteredBy) references users(userID),
@@ -68,4 +69,13 @@ create table lineItems (
 	foreign key (receiptID) references receipts(receiptID),
 	foreign key (feeID) references fees(feeID),
 	fulltext (notes)
+);
+
+create table voidedReceipts (
+receiptID int unsigned not null primary key,
+voidedDate date not null,
+voidedReason varchar(255) not null,
+voidedBy int unsigned not null,
+foreign key (receiptID) references receipts(receiptID),
+foreign key (voidedBy) references users(userID)
 );

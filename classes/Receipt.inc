@@ -12,6 +12,11 @@
 		private $depositSlipDate;
 		private $notes;
 
+		private $status;
+		private $voidedDate;
+		private $voidedReason;
+		private $voidedBy;
+
 		private $lineItems = array();
 
 		public function __construct($id = null)
@@ -29,10 +34,26 @@
 					$this->firstname = $receipt['firstname'];
 					$this->lastname = $receipt['lastname'];
 					$this->paymentMethod = $receipt['paymentMethod'];
+					$this->status = $receipt['status'];
 					if ($receipt['depositSlipDate']) { $this->depositSlipDate = $receipt['depositSlipDate']; }
 					if ($receipt['notes']) { $this->notes = $receipt['notes']; }
 
 					$this->loadLineItems();
+
+					# Load any voided data
+					if ($this->status == 'void')
+					{
+						$sql = "select * from voidedReceipts where receiptID={$this->receiptID}";
+						$result = mysql_query($sql) or die($sql.mysql_error());
+						if (mysql_num_rows($result))
+						{
+							$void = mysql_fetch_array($result);
+							$this->voidedDate = $void['voidedDate'];
+							$this->voidedReason = $void['voidedReason'];
+							$this->voidedBy = $void['voidedBy'];
+						}
+					}
+
 				}
 				else { throw new Exception($sql); }
 			}
@@ -42,7 +63,19 @@
 				$now = getdate();
 				$this->date = "$now[year]-$now[mon]-$now[mday]";
 				$this->enteredBy = $_SESSION['USER']->getUserID();
+				$this->status = 'valid';
 			}
+		}
+
+		public function void($voidedBy,$voidedReason)
+		{
+			if ($this->depositSlipDate) { throw new Exception("receiptAlreadyDeposited"); }
+
+			$now = getdate();
+			$this->status = 'void';
+			$this->voidedDate = "$now[year]-$now[mon]-$now[mday]";
+			$this->voidedReason = sanitizeString($voidedReason);
+			$this->voidedBy = $voidedBy;
 		}
 
 
@@ -52,12 +85,13 @@
 			else { $this->insert(); }
 
 			foreach($this->lineItems as $lineItem) { $lineItem->save(); }
+			if ($this->status == 'void') { $this->saveVoid(); }
 		}
 
 		private function update()
 		{
 			$sql = "update receipts set date='{$this->date}',enteredBy={$this->enteredBy},firstname='{$this->firstname}',lastname='{$this->lastname}',
-					paymentMethod='{$this->paymentMethod}'";
+					paymentMethod='{$this->paymentMethod}',status='{$this->status}'";
 			if ($this->depositSlipDate) { $sql.=",depositSlipDate='{$this->depositSlipDate}'"; } else { $sql.=",depositSlipDate=null"; }
 			if ($this->notes) { $sql.=",notes='{$this->notes}'"; } else { $sql.=",notes=null"; }
 			$sql.=" where receiptID={$this->receiptID}";
@@ -67,13 +101,22 @@
 		private function insert()
 		{
 			$sql = "insert receipts set date='{$this->date}',enteredBy={$this->enteredBy},firstname='{$this->firstname}',lastname='{$this->lastname}',
-					paymentMethod='{$this->paymentMethod}'";
+					paymentMethod='{$this->paymentMethod}',status='{$this->status}'";
 			if ($this->depositSlipDate) { $sql.=",depositSlipDate='{$this->depositSlipDate}'"; }
 			if ($this->notes) { $sql.=",notes='{$this->notes}'"; }
 			mysql_query($sql) or die($sql);
 			$this->receiptID = mysql_insert_id();
 
 			foreach($this->lineItems as $lineItem) { $lineItem->setReceiptID($this->receiptID); }
+		}
+
+		private function saveVoid()
+		{
+			$sql = "select receiptID from voidedReceipts where receiptID={$this->receiptID}";
+			$result = mysql_query($sql) or die($sql.mysql_error());
+			if (mysql_num_rows($result)) { $sql = "update voidedReceipts set voidedDate='{$this->voidedDate}',voidedReason='{$this->voidedReason}',voidedBy='{$this->voidedBy}' where receiptID={$this->receiptID}"; }
+			else { $sql = "insert voidedReceipts set receiptID={$this->receiptID},voidedDate='{$this->voidedDate}',voidedReason='{$this->voidedReason}',voidedBy='{$this->voidedBy}'"; }
+			mysql_query($sql) or die($sql.mysql_error());
 		}
 
 		private function loadLineItems()
@@ -102,7 +145,13 @@
 			return $amount;
 		}
 
+		public function getStatus() { return $this->status; }
+		public function getVoidedDate() { return $this->voidedDate; }
+		public function getVoidedReason() { return $this->voidedReason; }
+		public function getVoidedByUser() { if ($this->voidedBy) { return new User($this->voidedBy); } else { return false; } }
+
 		public function getEnteredByUser() { return new User($this->enteredBy); }
+
 
 		public function setReceiptID($receiptID) { $this->receiptID = $receiptID; }
 		public function setDate($date) { $this->date = $date; }

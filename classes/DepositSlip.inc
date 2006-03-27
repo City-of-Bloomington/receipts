@@ -21,7 +21,7 @@
 					$this->receiptList = new ReceiptList();
 					$this->receiptList->find(array("depositSlipDate"=>$this->date));
 				}
-				else { throw new Exception($sql); }
+				else { throw new Exception("noDepositSlipFound"); }
 			}
 			else
 			{
@@ -34,7 +34,7 @@
 					$this->receiptList = new ReceiptList();
 					$this->receiptList->find(array("depositSlipDate"=>"null"));
 				}
-				else { throw new Exception("Today's deposit slip already exists"); }
+				else { throw new Exception("depositSlipAlreadyExists"); }
 			}
 		}
 
@@ -48,6 +48,18 @@
 				$receipt->setDepositSlipDate($this->date);
 				$receipt->save();
 			}
+		}
+
+		public function delete()
+		{
+			$now = getdate();
+			if ($this->date != "$now[year]-$now[mon]-$now[mday]") { throw new Exception("receiptsAlreadyDeposited"); }
+
+			# Set all the receipts for this deposit slip back to undeposited
+			$sql = "update receipts set depositSlipDate=null where depositSlipDate='{$this->date}'";
+			mysql_query($sql) or die($sql.mysql_error());
+
+			unset($this->receiptList);
 		}
 
 
