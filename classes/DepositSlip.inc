@@ -65,13 +65,16 @@
 
 
 		public function getDate() { return $this->date; }
-		public function getReceipts($feeID=null)
+		public function getReceipts($feeID=null,$status=null)
 		{
 			if (!$feeID) { return $this->receiptList; }
 			else
 			{
+				$fields = array("feeID"=>$feeID,"depositSlipDate"=>$this->date);
+				if ($status) { $fields['status'] = $status; }
+
 				$receiptList = new ReceiptList();
-				$receiptList->find( array("feeID"=>$feeID,"depositSlipDate"=>$this->date) );
+				$receiptList->find( $fields );
 				return $receiptList;
 			}
 		}

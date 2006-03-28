@@ -53,7 +53,7 @@
 				$accountSubtotal = 0;
 				foreach($account->getFees() as $fee)
 				{
-					$receiptList = $depositSlip->getReceipts($fee->getFeeID());
+					$receiptList = $depositSlip->getReceipts($fee->getFeeID(),"valid");
 
 					$numReceipts = count($receiptList);
 

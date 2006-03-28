@@ -18,6 +18,7 @@
 				if (isset($fields['firstname'])) { $options[] = "firstname='$fields[firstname]'"; }
 				if (isset($fields['lastname'])) { $options[] = "lastname='$fields[lastname]'"; }
 				if (isset($fields['paymentMethod'])) { $options[] = "paymentMethod='$fields[paymentMethod]'"; }
+				if (isset($fields['status'])) { $options[] = "status='$fields[status]'"; }
 
 				if (isset($fields['depositSlipDate']))
 				{
