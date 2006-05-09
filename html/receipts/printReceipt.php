@@ -38,7 +38,7 @@ $FO = "<?xml version=\"1.0\" encoding=\"utf-8\"?>
 							<fo:table-cell><fo:block></fo:block></fo:table-cell>
 							<fo:table-cell>
 								<fo:block>Receipt #<fo:inline font-weight=\"bold\">{$receipt->getReceiptID()}</fo:inline></fo:block>
-								<fo:block>Date: $date[2]-$date[1]-$date[0]</fo:block>
+								<fo:block>Date: $date[1]-$date[2]-$date[0]</fo:block>
 								<fo:block>Received By: {$enteredBy->getPin()}</fo:block>
 							</fo:table-cell>
 						</fo:table-row>

@@ -27,7 +27,7 @@
 			}
 			else { $deleteButton = ""; }
 			echo "
-			<h1>Deposit Slip for $date[2]-$date[1]-$date[0] $deleteButton</h1>
+			<h1>Deposit Slip for $date[1]-$date[2]-$date[0] $deleteButton</h1>
 			<table>
 			<colgroup>
 				<col /><col /><col class=\"money\" /><col class=\"money\" /><col class=\"money\" /><col class=\"money\" />
@@ -139,19 +139,26 @@
 				echo "
 				<h2>Receipts: {$receiptList->getMinReceiptID()} to {$receiptList->getMaxReceiptID()}</h2>
 				<table>
-				<tr><th>Receipt</th><th>Amount</th><th>Date</th></tr>
+				<tr><th>Receipt</th><th>Amount</th><th>Date</th><th>Customer Name</th><th>Services</th><th>Payment Method</th></tr>
 				";
 				foreach($receiptList as $receipt)
 				{
 					$amount = number_format($receipt->getAmount(),2);
 					$date = explode("-",$receipt->getDate());
 
+					$services = array();
+					foreach($receipt->getLineItems() as $lineItem) { $services[] = $lineItem->getFee()->getName(); }
+					$services = implode(",",$services);
+
 					if ($receipt->getStatus() == 'void') { echo "<tr class=\"void\">"; }
 					else { echo "<tr>"; }
 					echo "
 						<td><a href=\"viewReceipt.php?receiptID={$receipt->getReceiptID()}\">{$receipt->getReceiptID()}</a></td>
 						<td class=\"money\">$amount</td>
-						<td>$date[2]-$date[1]-$date[0]</td>
+						<td>$date[1]-$date[2]-$date[0]</td>
+						<td>{$receipt->getFirstname()} {$receipt->getLastname()}</td>
+						<td>$services</th>
+						<td>{$receipt->getPaymentMethod()}</td>
 					</tr>
 					";
 				}
@@ -160,6 +167,9 @@
 				<tr class=\"total\">
 					<td></td>
 					<td class=\"money\">$grandTotal</td>
+					<td></td>
+					<td></td>
+					<td></td>
 					<td></td>
 				</tr>
 				</table>
