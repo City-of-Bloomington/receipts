@@ -111,7 +111,9 @@
 			else { $where = $this->where." and status='valid'"; }
 
 			# Total amounts will always have to join lineItems and fees, no matter what.
-			$sql = "select sum(amount) from receipts left join lineItems using (receiptID) left join fees using (feeID) $where";
+			$sql = "select sum(lineItems.amount) from receipts
+					left join lineItems using (receiptID)
+					left join fees using (feeID) $where";
 			$temp = mysql_query($sql) or die($sql.mysql_error());
 			list($amount) = mysql_fetch_array($temp);
 			return $amount;
