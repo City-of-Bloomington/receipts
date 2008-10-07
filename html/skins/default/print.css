@@ -1,0 +1,109 @@
+/*
+	This CSS is to be used only for printing.  It turns off stuff on a page, so you can
+	fit more on a page and get a better printout.
+*/
+/* Set the default styles for common HTML elements */
+body { color:black; background-color:white; margin:0px; font-family:sans-serif; font-size:8pt; }
+
+a { text-decoration:none; }
+a:link { color:#3366cc; background-color:inherit; }
+a:active { color:red; background-color:inherit; }
+a:visited { color:#3366cc;  background-color:inherit; }
+a:hover { color:#666666; background-color:inherit; }
+
+img { border:none; }
+
+h1 { text-align:center; margin:0em; }
+h2 { margin:0em; }
+h3 { margin:0em; }
+
+p { margin-top:0em; margin-bottom:1em; }
+
+form {  }
+fieldset {  }
+label { font-weight:bold; }
+label.required { color:red; background-color:inherit; }
+input { font-family:sans-serif; font-size:9pt; }
+
+table { border-collapse:collapse; }
+tr { vertical-align:top; }
+td { padding-left:.5em; padding-right:.5em; }
+th { text-align:left; background-color:#dddddd; padding-left:.5em; padding-right:.5em; vertical-align: top; }
+th a:link,th a:visited { color:white; background-color:inherit; }
+
+ul { margin-top:0em; }
+
+/* Some styles for the splash page of applications */
+.splashImage { float:right; }
+#loginBox { width:30ex; display:block; margin: 10px; }
+button.login { }
+
+/* Top Banner stuff */
+#banner { height:62px; background:#3366cc url('/skins/default/images/citylogo-white.gif') no-repeat; padding-left:80px; border-bottom:2px solid black; }
+#banner h1 { color:white; text-align:left; padding-top:5px; }
+#banner h2 { color:white; text-align:left; font-size:12pt; }
+#banner a { color:white; text-decoration:none; }
+
+/* Used to create a menu bar across any div */
+.menuBar { display:none; }
+
+/* Used to draw fancy bordered boxes around content */
+div.interfaceBox { background-color:inherit; color:inherit; border-bottom:2px dotted black; }
+div.titleBar { background-color:#3366cc; color:white; font-size:14pt; border:2px solid black; font-weight:bold; padding-left:.5em; padding-right:.5em; }
+div.titleBar a { margin:0px; height:20px; }
+
+/* These are for the floating tool boxes on the side of the page */
+div.sidebar { display:none; }
+
+/* Breadcrumb class for navigational items */
+div.breadcrumbs { font-size:10pt; font-weight:bold; }
+
+#mainContent { background-color:inherit; padding-left:3px; }
+div.contextualMenu { background-color:#fba500; color:black; border:2px solid black; margin-bottom:1em; margin-top:1em; }
+div.contextualMenu div.titleBar { background:inherit; display:inline; color:white; font-size:12pt; font-weight:bold; border:0; padding-left:1em; padding-right:0; }
+div.contextualMenu a { padding-left:1em; padding-right:1em; font-weight:bold; color:black; }
+div.contextualMenu a:hover { color:white; background-color:inherit; }
+
+/* For pages with tab-type system on them */
+div.tabBar { background-color:inherit; font-family: serif; font-weight: bold; border-bottom:2px solid black; }
+div.tabBar a:link, div.tabBar a:visited { color:white; background-color:gray; padding-left:1em; padding-right:1em; }
+div.tabBar a.current:link,div.tabBar a.current:visited { color:black; background-color:#fba500; border-top:2px solid black; border-right:2px solid black; border-left:2px solid black; }
+
+div.tabPage { }
+div.tabPageTitle { background-color:#fba500; color:black; height:20px; font-size:14pt; border:2px solid black; font-weight:bold; margin-bottom:1em; }
+div.tabPage > div.interfaceBox { margin-left:1em; margin-right:1em; }
+
+#footer { display:none; }
+
+
+/*  Custom buttons for forms */
+/* Rick doesn't want these custom images right now.
+button.login { width:52px; height:15px; padding-top:15px; background: url('/skins/default/images/login.gif') no-repeat; cursor:pointer; overflow:hidden; border:0; vertical-align:middle; }
+button.submit { width:70px; height:15px; padding-top:15px; background: url('/skins/default/images/submit.gif') no-repeat; cursor:pointer; overflow:hidden; border:0; vertical-align:middle; }
+button.search { width:67px; height:15px; padding-top:15px; background: url('/skins/default/images/search.gif') no-repeat; cursor:pointer; overflow:hidden; border:0; vertical-align:middle; }
+button.cancel { width:69px; height:15px; padding-top:15px; background: url('/skins/default/images/cancel.gif') no-repeat; cursor:pointer; overflow:hidden; border:0; vertical-align:middle; }
+button.save { width:52px; height:15px; padding-top:15px; background: url('/skins/default/images/save.gif') no-repeat; cursor:pointer; overflow:hidden; border:0; vertical-align:middle; }
+button.addLarge { width:52px; height:15px; padding-top:15px; background: url('/skins/default/images/addLarge.gif') no-repeat; cursor:pointer; overflow:hidden; border:0; vertical-align:middle; }
+button.editLarge { width:52px; height:15px; padding-top:15px; background: url('/skins/default/images/editLarge.gif') no-repeat; cursor:pointer; overflow:hidden; border:0; vertical-align:middle; }
+button.deleteLarge { width:63px; height:15px; padding-top:15px; background: url('/skins/default/images/deleteLarge.gif') no-repeat; cursor:pointer; overflow:hidden; border:0; vertical-align:middle; }
+button.start { width:52px; height:15px; padding-top:15px; background: url('/skins/default/images/start.gif') no-repeat; cursor:pointer; overflow:hidden; border:0; vertical-align:middle; }
+*/
+button.addSmall { width:15px; height:15px; padding-top:15px; background: url('/skins/default/images/addSmall.gif') no-repeat; cursor:pointer; overflow:hidden; border:0; vertical-align:middle; }
+button.editSmall { width:15px; height:15px; padding-top:15px; background: url('/skins/default/images/editSmall.gif') no-repeat; cursor:pointer; overflow:hidden; border:0; vertical-align:middle; }
+button.deleteSmall { width:15px; height:15px; padding-top:15px; background: url('/skins/default/images/deleteSmall.gif') no-repeat; cursor:pointer; overflow:hidden; border:0; vertical-align:middle; }
+button.excel { width:16px; height:16px; padding-top:16px; background: url('/skins/default/images/excel.gif') no-repeat; cursor:pointer; overflow:hidden; border:0; vertical-align:middle; }
+button.printSmall { width:16px; height:16px; padding-top:16px; background: url('/skins/default/images/printSmall.gif') no-repeat; cursor:pointer; overflow:hidden; border:0; vertical-align:middle; }
+
+
+/* Controls how error messages are displayed */
+#errorMessages { border:2px solid black; }
+#warning { border:2px solid red; }
+#warning h1 { color:inherit; background-color:red; font-size:14pt; }
+
+
+/* Various Styles for text */
+.copyright { text-align:center; font-size:10pt; }
+.comments { color:red; background-color:inherit; }
+.money { text-align:right; }
+.total { border-top:1px solid black; text-align:right; }
+.total td { padding-bottom:1em; }
