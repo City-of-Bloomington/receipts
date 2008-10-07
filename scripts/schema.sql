@@ -6,6 +6,13 @@ create table users (
 	pin int(4) unsigned zerofill
 );
 
+create table roles (
+	role varchar(30) not null primary key
+);
+insert roles values('Administrator');
+insert roles values('Supervisor');
+insert roles values('Clerk');
+
 create table userRoles (
 	userID int unsigned not null,
 	role varchar(30) not null,
@@ -13,13 +20,6 @@ create table userRoles (
 	foreign key (userID) references users(userID),
 	foreign key (role) references roles(role)
 );
-
-create table roles (
-	role varchar(30) not null primary key
-);
-insert roles values('Administrator');
-insert roles values('Supervisor');
-insert roles values('Clerk');
 
 
 create table accounts (
@@ -50,7 +50,7 @@ create table receipts (
 	foreign key (paymentMethod) references paymentMethods(paymentMethod),
 	foreign key (enteredBy) references users(userID),
 	fulltext (notes)
-);
+) engine=MyISAM;
 
 create table paymentMethods (
 	paymentMethod varchar(30) not null primary key
@@ -69,7 +69,7 @@ create table lineItems (
 	foreign key (receiptID) references receipts(receiptID),
 	foreign key (feeID) references fees(feeID),
 	fulltext (notes)
-);
+) engine=MyISAM;
 
 create table voidedReceipts (
 receiptID int unsigned not null primary key,
@@ -78,4 +78,4 @@ voidedReason varchar(255) not null,
 voidedBy int unsigned not null,
 foreign key (receiptID) references receipts(receiptID),
 foreign key (voidedBy) references users(userID)
-);
+) engine=MyISAM;
