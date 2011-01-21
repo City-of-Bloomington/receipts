@@ -50,4 +50,4 @@ session_start();
 
 
 # Import global functions that we use for many applications we write
-include(GLOBAL_INCLUDES."/ITSFunctions.inc");
+require_once(GLOBAL_INCLUDES."/ITSFunctions.inc");

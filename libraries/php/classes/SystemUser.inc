@@ -59,29 +59,9 @@
 		{
 			$connection = ldap_connect(LDAP_SERVER) or die("Couldn't connect to LDAP");
 			ldap_set_option($connection, LDAP_OPT_PROTOCOL_VERSION, 3);
-			ldap_bind($connection);
-
-			$result = ldap_search($connection,LDAP_DN,LDAP_USERNAME_ATTRIBUTE."={$this->username}");
-			if (ldap_count_entries($connection,$result))
-			{
-				$entries = ldap_get_entries($connection, $result);
-
-
-				if (eregi("^\{crypt\}(.+)",$entries[0][LDAP_PASSWORD_ATTRIBUTE][0],$matches))
-				{
-					$ldapPassword = $matches[1];
-					$salt = substr($ldapPassword,0,2);
-
-					$encryptedPassword = crypt($password,$salt);
-					if ($encryptedPassword == $ldapPassword) { return true; }
-					else
-					{
-						return false;
-					}
-				}
-				else { throw new Exception("passwordIsCorrupted"); }
+			if (ldap_bind($connection,LDAP_USERNAME_ATTRIBUTE."={$this->username},".LDAP_DN,"$password")) {
+				return true;
 			}
-			else { throw new Exception("unknownUser"); }
 		}
 
 		private function saveLDAPPassword()

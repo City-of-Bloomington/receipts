@@ -7,28 +7,23 @@
 	$_POST Variables:	username
 						password
 */
+try {
+	$user = new User($_POST['username']);
 
-	try
-	{
-		$user = new User($_POST['username']);
-
-		if ($user->authenticate($_POST['password'])) { $user->startNewSession(); }
-		else
-		{
-			$_SESSION['errorMessages'][] = "wrongPassword";
-			Header("Location: ".BASE_URL);
-			exit();
-		}
+	if ($user->authenticate($_POST['password'])) {
+		$user->startNewSession();
 	}
-	catch (Exception $e)
-	{
-		$_SESSION['errorMessages'][] = $e->getMessage();
-		Header("Location: ".BASE_URL);
-		exit();
+	else {
+		$_SESSION['errorMessages'][] = 'wrongPassword';
 	}
+}
+catch (Exception $e) {
+	$_SESSION['errorMessages'][] = $e->getMessage();
+	header('Location: '.BASE_URL);
+	exit();
+}
 
 
-	# Send them to an appropriate page depending on their roles.
-	if (in_array("Administrator",$_SESSION['USER']->getRoles())) { Header("Location: users"); }
-	else { Header("Location: receipts/addReceiptForm.php"); }
-?>
+# Send them to an appropriate page depending on their roles.
+if (in_array("Administrator",$_SESSION['USER']->getRoles())) { Header("Location: users"); }
+else { Header("Location: receipts/addReceiptForm.php"); }
