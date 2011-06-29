@@ -141,7 +141,7 @@ $FO.= "
 	readfile("/tmp/$time.pdf");
 
 	# Send it to the printer
-	#exec("lpr -P ".RECEIPT_PRINTER." /tmp/$time.pdf");
+	#exec("lp -d ".RECEIPT_PRINTER." /tmp/$time.pdf");
 
 	#Header("Location: viewReceipt.php?receiptID=$_GET[receiptID]");
 ?>
