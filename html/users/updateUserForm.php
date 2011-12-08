@@ -22,8 +22,14 @@
 		<table>
 		<tr><td><label for="authenticationMethod">Authentication</label></td>
 			<td><select name="authenticationMethod" id="authenticationMethod">
-					<option <?php if ($user->getAuthenticationMethod()=='LDAP') echo "selected=\"selected\""; ?>>LDAP</option>
-					<option <?php if ($user->getAuthenticationMethod()=='local') echo "selected=\"selected\""; ?>>local</option>
+				<?php
+					foreach (User::getAuthenticationMethods() as $method) {
+						$selected = $user->getAuthenticationMethod()==$method
+							? 'selected="selected"'
+							: '';
+						echo "<option $selected>$method</option>";
+					}
+				?>
 				</select>
 			</td>
 		</tr>

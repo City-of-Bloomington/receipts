@@ -19,15 +19,13 @@
 		{
 			switch($this->authenticationMethod)
 			{
-				case "LDAP":
-					if ($this->authenticateLDAP($password)) { return true; }
-					else { return false; }
+				case "local":
+					return $this->authenticateDatabase($password);
 				break;
 
-				case "local":
-					if ($this->authenticateDatabase($password)) { return true; }
-					else { return false; }
-				break;
+				default:
+					$type = $this->getAuthenticationMethod();
+					return $type::authenticate($this->getUsername(),$password);
 			}
 		}
 
@@ -44,64 +42,11 @@
 		{
 			switch($this->authenticationMethod)
 			{
-				case "LDAP":
-					$this->saveLDAPPassword();
-				break;
-
 				case "local":
 					$this->saveLocalPassword();
 				break;
 			}
 		}
-
-
-		private function authenticateLDAP($password)
-		{
-			$connection = ldap_connect(LDAP_SERVER) or die("Couldn't connect to LDAP");
-			ldap_set_option($connection, LDAP_OPT_PROTOCOL_VERSION, 3);
-			if (ldap_bind($connection,LDAP_USERNAME_ATTRIBUTE."={$this->username},".LDAP_DN,"$password")) {
-				return true;
-			}
-		}
-
-		private function saveLDAPPassword()
-		{
-			$connection = ldap_connect(LDAP_SERVER);
-			ldap_set_option($connection,LDAP_OPT_PROTOCOL_VERSION,3);
-			ldap_bind($connection,LDAP_USERNAME_ATTRIBUTE."=".LDAP_ADMIN_USER.",o=".LDAP_DOMAIN,LDAP_ADMIN_PASS) or die(ldap_error($connection));
-
-			$result = ldap_search($connection,LDAP_DN,LDAP_USERNAME_ATTRIBUTE."={$this->username}");
-			$entries = ldap_get_entries($connection, $result);
-
-			$dn = LDAP_USERNAME_ATTRIBUTE."={$this->username},ou=people,o=".LDAP_DOMAIN;
-			if ($this->password)
-			{
-
-				$salt = substr(md5(time()),0,2);
-				$encryptedPassword = "{CRYPT}".crypt($this->password,$salt);
-
-				$password = array(LDAP_PASSWORD_ATTRIBUTE=>$encryptedPassword);
-
-				if (isset($entries[0][LDAP_PASSWORD_ATTRIBUTE]))
-				{
-					# Modify
-					ldap_mod_replace($connection,$dn,$password) or die(print_r($password).ldap_error($connection));
-				}
-				else
-				{
-					# Add
-					ldap_mod_add($connection,$dn,$password) or die(print_r($password).ldap_error($connection));
-				}
-			}
-			else
-			{
-				# Delete
-				$password = array();
-				ldap_mod_del($connection,$dn,$password) or die(print_r($password).ldap_error($connection));
-			}
-		}
-
-
 
 		public function getUserID() { return $this->userID; }
 		public function getUsername() { return $this->username; }

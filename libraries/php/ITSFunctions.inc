@@ -5,7 +5,15 @@
 	#----------------------------------------------------------------------------
 	# Load classes on the fly as needed
 	#----------------------------------------------------------------------------
-	function __autoload($class) { require_once(APPLICATION_HOME."/classes/$class.inc"); }
+	function __autoload($class)
+	{
+		if (file_exists(APPLICATION_HOME."/classes/$class.inc")) {
+			require_once APPLICATION_HOME."/classes/$class.inc";
+		}
+		if (file_exists(GLOBAL_INCLUDES."/classes/$class.inc")) {
+			require_once GLOBAL_INCLUDES."/classes/$class.inc";
+		}
+	}
 
 
 	#----------------------------------------------------------------------------

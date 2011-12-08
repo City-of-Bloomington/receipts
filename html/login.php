@@ -12,6 +12,16 @@ try {
 
 	if ($user->authenticate($_POST['password'])) {
 		$user->startNewSession();
+
+		# Send them to an appropriate page depending on their roles.
+		if (in_array("Administrator",$_SESSION['USER']->getRoles())) {
+			header('Location: '.BASE_URL.'/users');
+			exit();
+		}
+		else {
+			header('Location: '.BASE_URL.'/receipts/addReceiptForm.php');
+			exit();
+		}
 	}
 	else {
 		$_SESSION['errorMessages'][] = 'wrongPassword';
@@ -19,11 +29,7 @@ try {
 }
 catch (Exception $e) {
 	$_SESSION['errorMessages'][] = $e->getMessage();
-	header('Location: '.BASE_URL);
-	exit();
 }
 
-
-# Send them to an appropriate page depending on their roles.
-if (in_array("Administrator",$_SESSION['USER']->getRoles())) { Header("Location: users"); }
-else { Header("Location: receipts/addReceiptForm.php"); }
+header('Location: '.BASE_URL);
+exit();

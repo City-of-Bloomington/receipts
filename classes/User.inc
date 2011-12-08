@@ -5,6 +5,14 @@
 	{
 		private $pin;
 
+		/**
+		 * @return array
+		 */
+		public static function getAuthenticationMethods()
+		{
+			return array('local','Employee');
+		}
+
 		public function __construct($id = null)
 		{
 			if ($id)
