@@ -1,0 +1,3 @@
+[mysqldump]
+user=receipts
+password=pass

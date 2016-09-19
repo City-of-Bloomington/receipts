@@ -1,19 +1,17 @@
 #!/bin/bash
-# Shell script to create database dumps
-# Purges old database dumps to save space
+# Creates a tarball containing a full snapshot of the data in the site
 #
-# @copyright Copyright 2009 City of Bloomington, Indiana
+# @copyright Copyright 2011-2016 City of Bloomington, Indiana
 # @license http://www.gnu.org/copyleft/gpl.html GNU/GPL, see LICENSE.txt
-# @author Cliff Ingham <inghamn@bloomington.in.gov>
-#
-BACKUP_DIR=/var/www/backups/receipt
-MYSQLDUMP=/usr/local/mysql/bin/mysqldump
+APPLICATION_NAME=receipts
+MYSQLDUMP=/usr/bin/mysqldump
+MYSQL_CREDENTIALS=/etc/cron.daily/backup.d/$APPLICATION_NAME.cnf
+BACKUP_DIR=/srv/backups/$APPLICATION_NAME
+APPLICATION_HOME=/srv/sites/$APPLICATION_NAME
 
-MYSQL_DBNAME=receipt
-MYSQL_USER=username
-MYSQL_PASS=password
+MYSQL_DBNAME=$APPLICATION_NAME
 
-# How many days worth of backups to keep around
+# How many days worth of tarballs to keep around
 num_days_to_keep=5
 
 #----------------------------------------------------------
@@ -22,10 +20,22 @@ num_days_to_keep=5
 now=`date +%s`
 today=`date +%F`
 
+if [ ! -d $BACKUP_DIR ]
+	then mkdir $BACKUP_DIR
+fi
 cd $BACKUP_DIR
+mkdir $today
 
 # Dump the database
-$MYSQLDUMP -u $MYSQL_USER -p$MYSQL_PASS $MYSQL_DBNAME > $today.sql
+$MYSQLDUMP --defaults-extra-file=$MYSQL_CREDENTIALS $MYSQL_DBNAME > $today/$MYSQL_DBNAME.sql
+
+# Copy any data directories into this directory, so they're backed up, too.
+# For example, if we had a media directory....
+#cp -R $APPLICATION_HOME/data/media $today/media
+
+# Tarball the Data
+tar czf $today.tar.gz $today
+rm -Rf $today
 
 # Purge any backup tarballs that are too old
 for file in `ls`
