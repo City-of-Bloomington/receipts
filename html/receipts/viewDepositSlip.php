@@ -29,17 +29,23 @@
 			echo "
 			<h1>Deposit Slip for $date[1]-$date[2]-$date[0] $deleteButton</h1>
 			<table>
-			<colgroup>
-				<col /><col /><col class=\"money\" /><col class=\"money\" /><col class=\"money\" /><col class=\"money\" />
-			</colgroup>
+                <colgroup>
+                    <col />
+                    <col />
+                    <col class=\"money\" />
+                    <col class=\"money\" />
+                    <col class=\"money\" />
+                    <col class=\"money\" />
+                </colgroup>
 			";
 
 			$accountList = new AccountList();
 			$accountList->find();
 			$buffer = "";
 
-			$cashGrandTotal = 0;
-			$checkGrandTotal = 0;
+			      $cashGrandTotal = 0;
+			     $checkGrandTotal = 0;
+			$creditCardGrandTotal = 0;
 			$moneyOrderGrandTotal = 0;
 			$bufferHasReceiptData = false;
 			foreach($accountList as $account)
@@ -47,8 +53,9 @@
 				$accountHasReceiptData = false;
 				$accountFeeBuffer = "";
 
-				$cashSubtotal = 0;
-				$checkSubtotal = 0;
+				      $cashSubtotal = 0;
+				     $checkSubtotal = 0;
+				$creditCardSubtotal = 0;
 				$moneyOrderSubtotal = 0;
 				$accountSubtotal = 0;
 				foreach($account->getFees() as $fee)
@@ -57,15 +64,17 @@
 
 					$numReceipts = count($receiptList);
 
-					$cash = $receiptList->getTotalAmount('cash');
-					$check = $receiptList->getTotalAmount('check');
+					$cash       = $receiptList->getTotalAmount('cash');
+					$check      = $receiptList->getTotalAmount('check');
+					$creditCard = $receiptList->getTotalAmount('credit card');
 					$moneyOrder = $receiptList->getTotalAmount('money order');
-					$feeTotal = $receiptList->getTotalAmount();
+					$feeTotal   = $receiptList->getTotalAmount();
 
-					$cashSubtotal += $cash;
-					$checkSubtotal += $check;
+					      $cashSubtotal += $cash;
+					     $checkSubtotal += $check;
+                    $creditCardSubtotal += $creditCard;
 					$moneyOrderSubtotal += $moneyOrder;
-					$accountSubtotal += $feeTotal;
+					   $accountSubtotal += $feeTotal;
 
 					if ($numReceipts > 0)
 					{
@@ -74,32 +83,36 @@
 							<td>$numReceipts</td>
 							<td class=\"money\">$cash</td>
 							<td class=\"money\">$check</td>
+							<td class=\"money\">$creditCard</td>
 							<td class=\"money\">$moneyOrder</td>
 							<td class=\"money\">$feeTotal</td>
 						</tr>
 						";
 						$accountHasReceiptData = true;
-						$bufferHasReceiptData = true;
+						 $bufferHasReceiptData = true;
 					}
 				}
 
 				if ($accountHasReceiptData)
 				{
-					$cashGrandTotal += $cashSubtotal;
-					$checkGrandTotal += $checkSubtotal;
+					      $cashGrandTotal += $cashSubtotal;
+					     $checkGrandTotal += $checkSubtotal;
+					$creditCardGrandTotal += $creditCardSubtotal;
 					$moneyOrderGrandTotal += $moneyOrderSubtotal;
 
-					$cashSubtotal = $cashSubtotal ? number_format($cashSubtotal,2) : "";
-					$checkSubtotal = $checkSubtotal ? number_format($checkSubtotal,2) : "";
-					$moneyOrderSubtotal = $moneyOrderSubtotal ? number_format($moneyOrderSubtotal,2) : "";
-					$accountSubtotal = $accountSubtotal ? number_format($accountSubtotal,2) : "";
+					      $cashSubtotal =       $cashSubtotal ? number_format($cashSubtotal,       2) : '';
+					     $checkSubtotal =      $checkSubtotal ? number_format($checkSubtotal,      2) : '';
+                    $creditCardSubtotal = $creditCardSubtotal ? number_format($creditCardSubtotal, 2) : '';
+					$moneyOrderSubtotal = $moneyOrderSubtotal ? number_format($moneyOrderSubtotal, 2) : '';
+					   $accountSubtotal =    $accountSubtotal ? number_format($accountSubtotal,    2) : '';
 
 					$buffer.= "
-					<tr><th colspan=\"6\">{$account->getName()} - {$account->getAccountNumber()}</th></tr>
+					<tr><th colspan=\"7\">{$account->getName()} - {$account->getAccountNumber()}</th></tr>
 					<tr><th>Service</th>
 						<th>Quantity</th>
 						<th>Cash</th>
 						<th>Check</th>
+						<th>Credit Card</td>
 						<th>Money Order</th>
 						<th>Total</th>
 					</tr>
@@ -108,6 +121,7 @@
 						<th colspan=\"2\">Subtotal</th>
 						<td class=\"money\">$cashSubtotal</td>
 						<td class=\"money\">$checkSubtotal</td>
+						<td class=\"money\">$creditCardSubtotal</td>
 						<td class=\"money\">$moneyOrderSubtotal</td>
 						<td class=\"money\">$accountSubtotal</td>
 					</tr>
@@ -118,11 +132,12 @@
 			if ($bufferHasReceiptData)
 			{
 				$receiptList = $depositSlip->getReceipts();
-				$grandTotal = number_format($receiptList->getTotalAmount(),2);
+				$grandTotal  = number_format($receiptList->getTotalAmount(),2);
 
-				$cashGrandTotal = $cashGrandTotal ? number_format($cashGrandTotal,2) : "";
-				$checkGrandTotal = $checkGrandTotal ? number_format($checkGrandTotal,2) : "";
-				$moneyOrderGrandTotal = $moneyOrderGrandTotal ? number_format($moneyOrderGrandTotal,2) : "";
+				      $cashGrandTotal =       $cashGrandTotal ? number_format($cashGrandTotal,       2) : '';
+				     $checkGrandTotal =      $checkGrandTotal ? number_format($checkGrandTotal,      2) : '';
+                $creditCardGrandTotal = $creditCardGrandTotal ? number_format($creditCardGrandTotal, 2) : '';
+				$moneyOrderGrandTotal = $moneyOrderGrandTotal ? number_format($moneyOrderGrandTotal, 2) : '';
 
 				echo $buffer;
 				echo "
@@ -130,6 +145,7 @@
 					<th colspan=\"2\">Total Deposit</th>
 					<td class=\"money\">$cashGrandTotal</td>
 					<td class=\"money\">$checkGrandTotal</td>
+					<td class=\"money\">$creditCardGrandTotal</td>
 					<td class=\"money\">$moneyOrderGrandTotal</td>
 					<td class=\"money\">$grandTotal</td>
 				</tr>

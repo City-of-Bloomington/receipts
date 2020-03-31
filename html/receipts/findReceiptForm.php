@@ -61,6 +61,7 @@
 		<ul style="list-style-type:none;">
 			<li><label><input name="paymentMethod" type="radio" value="cash" />Cash</label></li>
 			<li><label><input name="paymentMethod" type="radio" value="check" />Check</label></li>
+			<li><label><input name="paymentMethod" type="radio" value="credit card" />Credit Card</label></li>
 			<li><label><input name="paymentMethod" type="radio" value="money order" />Money Order</label></li>
 		</ul>
 	</fieldset>
