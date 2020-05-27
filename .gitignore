@@ -1,0 +1,6 @@
+build
+vendor
+data/sessions/*
+*.cache
+*.css*
+*.mo

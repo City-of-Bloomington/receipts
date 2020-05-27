@@ -1,0 +1,41 @@
+@import 'scss/reset';
+@import 'scss/vars';
+
+@import 'scss/html-elements';
+@import 'scss/layout';
+@import 'scss/header';
+
+#panel-one {
+    nav { border: 1px solid black; margin-bottom: $size-gutter; }
+    h2  { font-size: $font-size-normal; }
+    a   { display: block; }
+}
+
+#errorMessages {
+    background-color: $color-error;
+}
+
+.modified {
+    th, td { background-color: $color-alert; }
+}
+
+#logtable {
+    th { text-align: center; }
+    th, td { border: 1px solid black; min-width: 1em; }
+    td { vertical-align: middle; text-align: center; }
+
+    .subheadings th, th[rowspan="3"]  {
+        writing-mode: vertical-rl;
+        text-orientation: mixed;
+        vertical-align: middle;
+    }
+
+    thead .time, tbody th { width:50px; }
+    tbody tr:nth-child(odd) { background-color: $color-table-background; }
+}
+
+input[type="number"] { width:4em; }
+
+#findForm fieldset {
+    div    { display: inline; }
+}

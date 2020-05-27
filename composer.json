@@ -1,0 +1,27 @@
+{
+    "require": {
+        "php": ">=7.2",
+        "aura/di": "~3",
+        "aura/router": "~2",
+        "aura/sqlquery": "~2",
+        "jasig/phpcas": "~1",
+        "guzzlehttp/guzzle":               "@stable",
+        "graylog2/gelf-php":               "@stable",
+        "laminas/laminas-log":             "@stable",
+        "laminas/laminas-permissions-acl": "@stable"
+    },
+    "require-dev": {
+        "phpunit/phpunit": "@stable"
+    },
+    "autoload": {
+        "psr-4": {
+            "Web\\":    "src/Web/",
+            "Domain\\": "src/Domain"
+        }
+    },
+    "autoload-dev": {
+        "psr-4": {
+            "Test\\": "src/Test"
+        }
+    }
+}
