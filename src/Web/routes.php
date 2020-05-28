@@ -13,6 +13,12 @@ $ROUTES->add('home.index',    '/'       )->setValues(['controller' => 'Web\HomeC
 $ROUTES->add('login.login',   '/login'  )->setValues(['controller' => 'Web\Authentication\LoginController']);
 $ROUTES->add('login.logout',  '/logout' )->setValues(['controller' => 'Web\Authentication\LogoutController']);
 
+$ROUTES->attach('accounts', '/accounts', function ($r) {
+    $r->add('update', '/{id}/update')->setValues(['controller' => 'Web\Accounts\Controllers\UpdateController']);
+    $r->add('add',    '/add'        )->setValues(['controller' => 'Web\Accounts\Controllers\AddController'   ]);
+    $r->add('index',  '')            ->setValues(['controller' => 'Web\Accounts\Controllers\ListController'  ]);
+});
+
 $ROUTES->attach('people', '/people', function ($r) {
     $r->add('update', '/update{/id}') ->setValues(['controller' => 'Web\People\Controllers\UpdateController']);
     $r->add('view',   '/{id}')        ->setValues(['controller' => 'Web\People\Controllers\ViewController'  ]);

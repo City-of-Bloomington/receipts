@@ -15,6 +15,7 @@ $DI->set('db.default', \Web\Database::getConnection('default', $DATABASES['defau
 // Declare database repositories
 //---------------------------------------------------------
 $repos = [
+    'Accounts',
     'People', 'Users'
 ];
 foreach ($repos as $t) {
@@ -38,6 +39,13 @@ $DI->lazyNew('Web\Authentication\AuthenticationService'));
 //---------------------------------------------------------
 // Use Cases
 //---------------------------------------------------------
+//Accounts
+foreach (['Add', 'Info', 'Search', 'Update'] as $a) {
+    $DI->params[ "Domain\\Accounts\\UseCases\\$a\\Command"]['repository'] = $DI->lazyGet('Domain\Accounts\DataStorage\AccountsRepository');
+    $DI->set(    "Domain\\Accounts\\UseCases\\$a\\Command",
+    $DI->lazyNew("Domain\\Accounts\\UseCases\\$a\\Command"));
+}
+
 // People
 foreach(['Info', 'Load', 'Search', 'Update'] as $a) {
     $DI->params[ "Domain\\People\\UseCases\\$a\\Command"]['repository'] = $DI->lazyGet('Domain\People\DataStorage\PeopleRepository');

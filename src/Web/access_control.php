@@ -26,5 +26,5 @@ foreach ($ROUTES->getRoutes() as $r) {
 $ACL->allow(null, 'home');
 $ACL->allow(null, 'login');
 
-$ACL->allow('Supervisor', 'user');
+$ACL->allow('Supervisor', 'users');
 $ACL->allow('Administrator');
